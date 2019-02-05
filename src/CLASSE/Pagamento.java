@@ -82,7 +82,7 @@ public class Pagamento implements Serializable {
     }
 
     public void setId(Integer id) {
-        this.id = id     ;
+        this.id = id;
     }
 
     public Double getTxdesconto() {
