@@ -331,14 +331,18 @@ public class CrudUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
-        String retorno = RegrasGerenciamento.getInstance().salvarUsuario(edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), cbPermissao.getSelectedIndex());
+        try {
+            String retorno = RegrasGerenciamento.getInstance().salvarUsuario(edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), cbPermissao.getSelectedIndex());
 
-        if (retorno.equalsIgnoreCase("")) {
-            carregaTabela();
-            JOptionPane.showMessageDialog(null, "Adicionado com sucesso!");
-            limpa();
-        } else {
-            JOptionPane.showMessageDialog(null, retorno);
+            if (retorno.equalsIgnoreCase("")) {
+                carregaTabela();
+                JOptionPane.showMessageDialog(null, "Adicionado com sucesso!");
+                limpa();
+            } else {
+                JOptionPane.showMessageDialog(null, retorno);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao salvar dado. Contate um programador. " + e);
         }
     }//GEN-LAST:event_btSalvarActionPerformed
 
@@ -350,16 +354,15 @@ public class CrudUsuario extends javax.swing.JFrame {
         String retorno;
         try {
             retorno = RegrasGerenciamento.getInstance().alterarUsuario(Integer.parseInt(edId.getText()), edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), cbPermissao.getSelectedIndex());
-       
 
-        if (retorno.equalsIgnoreCase("")) {
-            carregaTabela();
-            JOptionPane.showMessageDialog(null, "Alterado com sucesso!");
-            limpa();            
-        } else {
-            JOptionPane.showMessageDialog(null, retorno);
-        }
-         } catch (InvalidKeySpecException ex) {
+            if (retorno.equalsIgnoreCase("")) {
+                carregaTabela();
+                JOptionPane.showMessageDialog(null, "Alterado com sucesso!");
+                limpa();
+            } else {
+                JOptionPane.showMessageDialog(null, retorno);
+            }
+        } catch (InvalidKeySpecException ex) {
             Logger.getLogger(CrudUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btAlterarActionPerformed
@@ -382,11 +385,9 @@ public class CrudUsuario extends javax.swing.JFrame {
             UsuarioJtable tm;
             tm = new UsuarioJtable();
             Usuario u = tm.get(linha);
-            
 
             edId.setText(String.valueOf(u.getId()));
             ednomeUser.setText(u.getNmusuario());
-       //     edSenha.setText(u.getDssenha());aqui
             edUsuario.setText(u.getDsusuario());
             cbPermissao.setSelectedIndex(u.getIetipopermissao());
 

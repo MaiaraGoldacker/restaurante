@@ -5,25 +5,7 @@
  */
 package TELA;
 
-import DAO.ComandaDAO;
-import DAO.PedidoDAO;
-import DAO.ProdutoDAO;
 import DAO.UsuarioDAO;
-import CLASSE.Comanda;
-import CLASSE.Pedido;
-import CLASSE.Produto;
-import TELA.JTABLE.RealizarPedido.PedidoJtable;
-import TELA.JTABLE.RealizarPedido.ProdutoJtable;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -38,25 +20,14 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
 
         if (UsuarioDAO.getInstance().getUsuarioLogado().getIetipopermissao() == 1) {
-            btCadUsuarios.setVisible(false);
-            
+            btCadUsuarios.setVisible(false);         
             btConsPagtos.setVisible(false);
-            
-            btGerVendas.setVisible(false);
-            
-
         } else if (UsuarioDAO.getInstance().getUsuarioLogado().getIetipopermissao() == 2) {
-            btCadUsuarios.setVisible(false);
-          
+            btCadUsuarios.setVisible(false);          
             btConsPagtos.setVisible(false);        
-
             btCadComanda.setVisible(false);
-
             btCadProdutos.setVisible(false);
-
-            btCadAdicionais.setVisible(false);
-
-            btGerVendas.setVisible(false);
+            btCadAdicionais.setVisible(false);   
         }
 
         btCadUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/user.png")));
@@ -67,19 +38,10 @@ public class Principal extends javax.swing.JFrame {
         btRealizarPag.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/pay.png")));
         btConsPed.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/consped.png")));
         btConsPagtos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/paygrande.png")));
-        btGerVendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sale.png")));
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/Restaurant-icon.png")).getImage());
     }
-
-    public void carregarTabelaPedido() {
-
-    }
-
-    public void carregaTabela() {
-
-    }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -100,7 +62,6 @@ public class Principal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btConsPed = new javax.swing.JButton();
         btCadAdicionais = new javax.swing.JButton();
-        btGerVendas = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         opSair = new javax.swing.JMenu();
         opTrocarUsuario = new javax.swing.JMenu();
@@ -228,23 +189,12 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        btGerVendas.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        btGerVendas.setText("Vendas");
-        btGerVendas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btGerVendas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btGerVendas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btGerVendasActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btConsPed, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
             .addComponent(btCadAdicionais, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btGerVendas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -253,8 +203,6 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(btConsPed)
                 .addGap(93, 93, 93)
                 .addComponent(btCadAdicionais)
-                .addGap(95, 95, 95)
-                .addComponent(btGerVendas)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -349,11 +297,6 @@ public class Principal extends javax.swing.JFrame {
         tela.setVisible(true);
     }//GEN-LAST:event_btConsPagtosActionPerformed
 
-    private void btGerVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGerVendasActionPerformed
-        GerenciamentoVendas tela = new GerenciamentoVendas();
-        tela.setVisible(true);
-    }//GEN-LAST:event_btGerVendasActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -429,7 +372,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btCadUsuarios;
     private javax.swing.JButton btConsPagtos;
     private javax.swing.JButton btConsPed;
-    private javax.swing.JButton btGerVendas;
     private javax.swing.JButton btRealizarPag;
     private javax.swing.JButton btRealizarPed;
     private javax.swing.JMenuBar jMenuBar1;

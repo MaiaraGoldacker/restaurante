@@ -9,8 +9,10 @@ import CLASSE.Comanda;
 import CLASSE.Produto;
 import CLASSE.Usuario;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -127,8 +129,11 @@ public class RegrasGerenciamento {
         return "";
     }
 
-    public String salvarUsuario(String usuario, String nome, String senha, int permissao) {
-        try {
+    public String salvarUsuario(String usuario, String nome, String senha, int permissao) throws InvalidKeySpecException, SQLException {
+        List<Usuario> usuarios = UsuarioDAO.getInstance().findByUser(usuario);
+        if (usuarios.size() != 0) {
+            return "Este usuário já está sendo utilizado, escolha outro!";
+        } else {
             Usuario u = new Usuario();
             u.setIeativo((short) 1);
 
@@ -143,13 +148,12 @@ public class RegrasGerenciamento {
                 Passwords pass = new Passwords();
 
                 char[] c = senha.toCharArray();
-                byte[] salt = new byte[16];
+                byte[] salt = pass.getNextSalt();
+                u.setSalt(salt);
                 u.setDssenha(pass.hash(c, salt));
             }
 
             u.setIetipopermissao(permissao);
-
-            u.setDtatualizacao(cal.getTime());
 
             String msgError = validaInformacoesUsuario(u);
 
@@ -160,8 +164,6 @@ public class RegrasGerenciamento {
                 return "";
             }
 
-        } catch (Exception e) {
-            return "Erro";
         }
     }
 
@@ -179,50 +181,52 @@ public class RegrasGerenciamento {
         return msgError;
     }
 
-    public String alterarUsuario(int id, String usuario, String nome, String senha, int permissao) throws InvalidKeySpecException {
+    public String alterarUsuario(int id, String usuario, String nome, String senha, int permissao) throws InvalidKeySpecException, SQLException {
 
-        Usuario u = UsuarioDAO.getInstance().getById(id);
-        boolean isAlterou = false;
+        List<Usuario> usuarios = UsuarioDAO.getInstance().findByUser(usuario);
+        if (usuarios.size() != 0) {
+            return "Este usuário já está sendo utilizado, escolha outro!";
+        } else {
 
-        if (!usuario.equalsIgnoreCase("")) {
-            if (!u.getDsusuario().equalsIgnoreCase(usuario)) {
-                u.setDsusuario(usuario);
+            Usuario u = UsuarioDAO.getInstance().getById(id);
+            boolean isAlterou = false;
+
+            if (!usuario.equalsIgnoreCase("")) {
+                if (!u.getDsusuario().equalsIgnoreCase(usuario)) {
+                    u.setDsusuario(usuario);
+                    isAlterou = true;
+                }
+            }
+
+            if (!senha.equalsIgnoreCase("")) {
+
+                Passwords pass = new Passwords();
+
+                char[] c = senha.toCharArray();
+                byte[] salt = u.getSalt();
+                if (!pass.isExpectedPassword(c, salt, u.getDssenha())) {
+                    u.setDssenha(pass.hash(c, salt));
+                    isAlterou = true;
+                }
+            }
+
+            if (u.getIetipopermissao() != permissao) {
+                u.setIetipopermissao(permissao);
                 isAlterou = true;
             }
-        }
 
-        if (!senha.equalsIgnoreCase("")) {
+            if (isAlterou) {
+                String msgError = validaInformacoesUsuario(u);
 
-            Passwords pass = new Passwords();
-            
-            char[] c = senha.toCharArray();
-            byte[] salt = new byte[16];
-            if (!pass.isExpectedPassword(c, salt, u.getDssenha())) {
-                u.setDssenha(pass.hash(c, salt));
-                isAlterou = true;
+                if (msgError.equalsIgnoreCase("")) {
+                    UsuarioDAO.getInstance().merge(u);
+                    return "";
+                } else {
+                    return msgError;
+                }
             }
+            return "";
         }
-
-        if (u.getIetipopermissao() != permissao) {
-            u.setIetipopermissao(permissao);
-            isAlterou = true;
-        }
-
-        if (isAlterou) {
-         //   u.setNmusuario(UsuarioDAO.getInstance().getUsuarioLogado().getDsusuario());
-            u.setDtatualizacao(cal.getTime());
-
-            String msgError = validaInformacoesUsuario(u);
-
-            if (msgError.equalsIgnoreCase("")) {
-                UsuarioDAO.getInstance().merge(u);
-                return "";
-            } else {
-                return msgError;
-            }
-
-        }
-        return "";
     }
 
     public String salvarProduto(String observacao, String nome, Float valor, int classificacao) {

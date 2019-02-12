@@ -17,20 +17,16 @@ import CLASSE.Produto;
 import DAO.PagamentoDAO;
 import DAO.PedidoDAO;
 import DAO.UsuarioDAO;
-import TELA.ConsultaLucro;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -49,42 +45,38 @@ public class RegrasPagamento {
         return instance;
     }
 
-    public Double calcularTotalPagto(List<Pedido> pedidos, String desconto, String acrescimo, boolean ieBruto) {
-        try {
-            if (desconto.equalsIgnoreCase("")) {
-                desconto = "0";
+    public Double calcularTotalPagto(List<Pedido> pedidos, String desconto, String acrescimo, boolean ieBruto) throws SQLException {
+        if (desconto.equalsIgnoreCase("")) {
+            desconto = "0";
+        }
+
+        if (acrescimo.equalsIgnoreCase("")) {
+            acrescimo = "0";
+        }
+
+        double acresimoDoub = Double.parseDouble(acrescimo);
+        double descDoub = Double.parseDouble(desconto);
+        double valor = 0;
+
+        for (Pedido ped : pedidos) {
+            Produto prod = ProdutoDAO.getInstance().getById(ped.getProdutoId());
+
+            List<AdicionalPedido> adicPed = AdicionalPedidoDAO.getInstance().findAdicionaisDeProdutos(ped.getId(), prod.getId());
+            double vlAdicional = 0;
+            for (AdicionalPedido adicPedidos : adicPed) {
+                Adicional a = AdicionaisDAO.getInstance().getById(adicPedidos.getAdicionalId());
+
+                vlAdicional += a.getVladicional();
             }
 
-            if (acrescimo.equalsIgnoreCase("")) {
-                acrescimo = "0";
-            }
-
-            double acresimoDoub = Double.parseDouble(acrescimo);
-            double descDoub = Double.parseDouble(desconto);
-            double valor = 0;
-
-            for (Pedido ped : pedidos) {
-                Produto prod = ProdutoDAO.getInstance().getById(ped.getProdutoId());
-
-                List<AdicionalPedido> adicPed = AdicionalPedidoDAO.getInstance().findAdicionaisDeProdutos(ped.getId(), prod.getId());
-                double vlAdicional = 0;
-                for (AdicionalPedido adicPedidos : adicPed) {
-                    Adicional a = AdicionaisDAO.getInstance().getById(adicPedidos.getAdicionalId());
-
-                    vlAdicional += a.getVladicional();
-                }
-
-                valor += prod.getVlproduto() + vlAdicional;
-            }
-            if (ieBruto) {
-                return valor;
-            } else {
-                valor = CalcularDesconto(valor, descDoub);
-                valor = CalcularAcrescimo(valor, acresimoDoub);
-                return valor;
-            }
-        } catch (Exception ex) {
-            return 0.0;
+            valor += prod.getVlproduto() + vlAdicional;
+        }
+        if (ieBruto) {
+            return valor;
+        } else {
+            valor = CalcularDesconto(valor, descDoub);
+            valor = CalcularAcrescimo(valor, acresimoDoub);
+            return valor;
         }
     }
 
@@ -120,85 +112,62 @@ public class RegrasPagamento {
         return adicionais;
     }
 
-    /* public Double carregaLucro(Pagamento pag) {
-        try {
-            double vlTot = 0;
-            double vlAdic = 0;
-            List<Pedido> peds = PedidoDAO.getInstance().findAllByPagamento(pag.getId());
-
-            for (Pedido ped : peds) {
-                List<AdicionalPedido> adicsPed = AdicionalPedidoDAO.getInstance().findAdicionaisDeProdutos(ped.getId(), ped.getProdutoId());
-
-                for (AdicionalPedido adics : adicsPed) {
-                    Adicional ad = AdicionaisDAO.getInstance().getById(adics.getAdicionalId());
-                    vlAdic += ad.getVladicional();
-                }
-
-                Produto p = ProdutoDAO.getInstance().getById(ped.getProdutoId());
-
-                vlTot += p.getVlproduto();
-            }
-
-            return vlTot + vlAdic;
-        } catch (Exception e) {
-            return 0.0;
-        }
-
-    }*/
     public List<Pagamento> atualizaListaFiltros(String dataIni, String dataFim, int idUsuario, String idpagto) throws ParseException, SQLException {
         List<Pagamento> pags = new ArrayList<Pagamento>();
-        DateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-        Date dateini = null;
-        Date datefim = null;
         if (!dataIni.equalsIgnoreCase("  /  /    ") && !dataFim.equalsIgnoreCase("  /  /    ")) {
-            dateini = new java.sql.Date(((java.util.Date) formatter.parse(dataIni)).getTime());
-            datefim = new java.sql.Date(((java.util.Date) formatter.parse(dataFim)).getTime());
+
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            df.setLenient(false);
+            Date d = df.parse(dataIni);
+            df = new SimpleDateFormat("yyyy-MM-dd");
+            dataIni = df.format(d);
+
+            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+            df2.setLenient(false);
+            Date dff = df2.parse(dataFim);
+            df2 = new SimpleDateFormat("yyyy-MM-dd");
+            dataFim = df2.format(dff);
+
         }
         int id = 0;
         if (!idpagto.equalsIgnoreCase("")) {
             id = Integer.parseInt(idpagto);
         }
-        pags = PagamentoDAO.getInstance().findAllPersonalizado(dateini, datefim, idUsuario, id);
+        pags = PagamentoDAO.getInstance().findAllPersonalizado(dataIni, dataFim, idUsuario, id);
         return pags;
     }
 
-    public String salvarPagamento(List<Comanda> listaComandasSelecionadas, String acrescimo, String desconto, String valorTotal) {
-        try {
-            int idPagto = 0;
-            Pagamento p = new Pagamento();
-            for (Comanda com : listaComandasSelecionadas) {
+    public String salvarPagamento(List<Comanda> listaComandasSelecionadas, String acrescimo, String desconto, String valorTotal) throws SQLException {
+        int idPagto = 0;
+        Pagamento p = new Pagamento();
+        for (Comanda com : listaComandasSelecionadas) {
 
-                if ("".equalsIgnoreCase(acrescimo)) {
-                    acrescimo = "0";
-                }
-
-                if ("".equalsIgnoreCase(desconto)) {
-                    desconto = "0";
-                }
-
-                p.setTxdesconto(Double.valueOf(desconto));
-                p.setTxacrescimo(Double.valueOf(acrescimo));
-
-                p.setDtatulizacao(cal.getTime());
-                p.setUsuarioId(UsuarioDAO.getInstance().getUsuarioLogado().getId());
-                p.setVltotal(Float.parseFloat(valorTotal));
-                p.setIeativo((short) 1);
-
-                idPagto = PagamentoDAO.getInstance().persist(p);
-
-                List<Pedido> pedidos = PedidoDAO.getInstance().findAllAtender(2, com.getId());
-
-                for (Pedido ped : pedidos) {
-                    ped.setPagamentoId(idPagto);
-                    ped.setStpedido(3);
-                    PedidoDAO.getInstance().merge(ped);
-                }
-
+            if ("".equalsIgnoreCase(acrescimo)) {
+                acrescimo = "0";
             }
-            return "Pagamento realizado com sucesso! Pagamento nº " + idPagto;
-        } catch (SQLException ex) {
-            Logger.getLogger(RegrasPagamento.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
+
+            if ("".equalsIgnoreCase(desconto)) {
+                desconto = "0";
+            }
+
+            p.setTxdesconto(Double.valueOf(desconto));
+            p.setTxacrescimo(Double.valueOf(acrescimo));
+
+            p.setDtatulizacao(cal.getTime());
+            p.setUsuarioId(UsuarioDAO.getInstance().getUsuarioLogado().getId());
+            p.setVltotal(Float.parseFloat(valorTotal));
+            p.setIeativo((short) 1);
+
+            idPagto = PagamentoDAO.getInstance().persist(p);
+
+            List<Pedido> pedidos = PedidoDAO.getInstance().findAllAtender(2, com.getId());
+
+            for (Pedido ped : pedidos) {
+                ped.setPagamentoId(idPagto);
+                ped.setStpedido(3);
+                PedidoDAO.getInstance().merge(ped);
+            }
         }
+        return "Pagamento realizado com sucesso! Pagamento nº " + idPagto;
     }
 }

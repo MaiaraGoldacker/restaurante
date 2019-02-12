@@ -119,17 +119,13 @@ public class RegrasPedido {
         return desc;
     }
 
-    public void salvarPedidoEfetivamente(int comanda) {
-        try {
-            List<Pedido> pedidos = PedidoDAO.getInstance().findAtualizarPedido(comanda);
+    public void salvarPedidoEfetivamente(int comanda) throws SQLException {
+        List<Pedido> pedidos = PedidoDAO.getInstance().findAtualizarPedido(comanda);
 
-            for (Pedido p : pedidos) {
-                p.setDtatualizacao(cal.getTime());
-                p.setStpedido(1);
-                PedidoDAO.getInstance().merge(p);
-            }
-        } catch (Exception e) {
-
+        for (Pedido p : pedidos) {
+            p.setDtatualizacao(cal.getTime());
+            p.setStpedido(1);
+            PedidoDAO.getInstance().merge(p);
         }
     }
 

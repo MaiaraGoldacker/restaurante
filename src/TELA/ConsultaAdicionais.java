@@ -66,7 +66,7 @@ public class ConsultaAdicionais extends javax.swing.JFrame {
     }
 
     public ConsultaAdicionais() {
-
+        //construtor vazio necessário
     }
 
     public void carregaTabela() {

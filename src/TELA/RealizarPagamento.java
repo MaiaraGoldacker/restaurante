@@ -99,7 +99,7 @@ public class RealizarPagamento extends javax.swing.JFrame {
         btCom18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/mesa.png")));
         btCom19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/mesa.png")));
         btCom20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/mesa.png")));
-       this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/pay.png")).getImage());    
+        this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/pay.png")).getImage());
 
         setDefaultCloseOperation(RealizarPedido.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -181,8 +181,8 @@ public class RealizarPagamento extends javax.swing.JFrame {
                     btCom20.setText(String.valueOf(com.getId()));
                 }
             }
-        } catch (Exception ex) {
-
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao carregar detalhes. Contate um programador. " + e);
         }
     }
 
@@ -799,8 +799,12 @@ public class RealizarPagamento extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btRealizarPagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRealizarPagamentoActionPerformed
-       String retorno = RegrasPagamento.getInstance().salvarPagamento(listaComandasSelecionadas, edAcrescimo.getText(), edDesconto.getText(), edValor.getText());
-        JOptionPane.showMessageDialog(null, retorno);
+        try {
+            String retorno = RegrasPagamento.getInstance().salvarPagamento(listaComandasSelecionadas, edAcrescimo.getText(), edDesconto.getText(), edValor.getText());
+            JOptionPane.showMessageDialog(null, retorno);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao salvar pagamento. Contate um programador. " + e);
+        }
     }//GEN-LAST:event_btRealizarPagamentoActionPerformed
 
     private void btAltPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAltPedidoActionPerformed
@@ -899,17 +903,22 @@ public class RealizarPagamento extends javax.swing.JFrame {
     }//GEN-LAST:event_tbPedidosMouseClicked
 
     private void edDescontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_edDescontoFocusLost
-        if ((!"".equalsIgnoreCase(edTotalPagto.getText())) && (!"".equalsIgnoreCase(edDesconto.getText()))) {
-            edTotalPagto.setText(f.format(RegrasPagamento.getInstance().calcularTotalPagto(listaTodosPedidos, edDesconto.getText(), edAcrescimo.getText(), false)));
+        try {
+            if ((!"".equalsIgnoreCase(edTotalPagto.getText())) && (!"".equalsIgnoreCase(edDesconto.getText()))) {
+                edTotalPagto.setText(f.format(RegrasPagamento.getInstance().calcularTotalPagto(listaTodosPedidos, edDesconto.getText(), edAcrescimo.getText(), false)));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao calcular desconto. Contate um programador. " + e);
         }
     }//GEN-LAST:event_edDescontoFocusLost
 
     private void edAcrescimoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_edAcrescimoFocusLost
-
-        if ((!"".equalsIgnoreCase(edTotalPagto.getText())) && (!"".equalsIgnoreCase(edDesconto.getText()))) {
-
-            edTotalPagto.setText(f.format(RegrasPagamento.getInstance().calcularTotalPagto(listaTodosPedidos, edDesconto.getText(), edAcrescimo.getText(), false)));
-
+        try {
+            if ((!"".equalsIgnoreCase(edTotalPagto.getText())) && (!"".equalsIgnoreCase(edDesconto.getText()))) {
+                edTotalPagto.setText(f.format(RegrasPagamento.getInstance().calcularTotalPagto(listaTodosPedidos, edDesconto.getText(), edAcrescimo.getText(), false)));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao calcular acréscimo. Contate um programador. " + e);
         }
     }//GEN-LAST:event_edAcrescimoFocusLost
 

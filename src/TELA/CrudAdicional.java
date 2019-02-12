@@ -72,7 +72,7 @@ public class CrudAdicional extends javax.swing.JFrame {
                 }
             });
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao carregar tela. Contate um programador. " + e); 
         }
     }
 

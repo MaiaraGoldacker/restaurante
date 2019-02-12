@@ -39,7 +39,6 @@ public class ProdutoDAO {
     }
 
     public void removeById(final int id) {
-     //   remove(entityManager.find(Produto.class, id));
       Produto p = entityManager.find(Produto.class, id);
       p.setIeativo((short) 0);
       merge(p);
@@ -78,47 +77,11 @@ public class ProdutoDAO {
         return prod;
     }
     
-     public List<Produto> findAllMaisVendidos(int idClassificacao) throws SQLException {
-        List<Produto> prod = new ArrayList<Produto>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-     
-        PreparedStatement stmt;
-        
-        String sql = "";
-        
-       sql = " select pr.id, count(pr.id) apelido from pagamento pa  inner join pedido as pe on pa.id = pe.pagamento_id "   
-            + " inner join produto as pr on  pr.id = pe.produto_id  where 1=1 "
-            + " and pr.classificacao = ? or ?=0 "
-            + " and pr.ieativo = 1 "
-            + " and pa.ieativo = 1 "
-            + " group by pr.id "
-            + " order by count(pr.id) desc "   ;
-        
-        stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, idClassificacao);
-        stmt.setInt(2, idClassificacao);
-        ResultSet rs = stmt.executeQuery();
-       
-        while (rs.next()) {
-            prod.add(getById(rs.getInt("ID")));
-            
-             for (Produto a : prod) {
-                if (a.getId() == rs.getInt("ID")) {
-                    a.setVlproduto(rs.getFloat("apelido"));
-                }
-            }
-        }
-        conn.close();
-        return prod;
-    }
-
     public Produto getById(final int id) {
         return entityManager.find(Produto.class, id);
     }
 
-    public void persist(Produto produto) {
-        //getEntityManager();
+    public void persist(Produto produto) {   
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(produto);

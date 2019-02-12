@@ -5,7 +5,6 @@
  */
 package TELA;
 
-import CLASSE.Comanda;
 import DAO.PedidoDAO;
 import DAO.ProdutoDAO;
 import CLASSE.Pedido;
@@ -15,20 +14,13 @@ import REGRAS.RegrasPagamento;
 import REGRAS.RegrasPedido;
 import TELA.JTABLE.RealizarPedido.PedidoJtable;
 import TELA.JTABLE.RealizarPedido.ProdutoJtable;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.EventHandler;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.Stage;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 
 /**
  *
@@ -55,7 +47,7 @@ public class RealizarPedido extends javax.swing.JFrame {
     }
 
     private void carregaDetalhesTela() {
-      
+
         btSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/lox.png")));
         btSelecAdicionais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/more.png")));
         btPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/carr.png")));
@@ -64,7 +56,7 @@ public class RealizarPedido extends javax.swing.JFrame {
         btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
         this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/carrin.png")).getImage());
-        
+
         if (comandaExterna != 0) {
             edComandaPedido.setText(String.valueOf(comandaExterna));
             btPesquisar.doClick();
@@ -73,7 +65,7 @@ public class RealizarPedido extends javax.swing.JFrame {
         setDefaultCloseOperation(RealizarPedido.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-               btSair.doClick();
+                btSair.doClick();
             }
         });
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -147,16 +139,6 @@ public class RealizarPedido extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                formMouseExited(evt);
-            }
-        });
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
 
         jpProduto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(153, 153, 153)), "Selecionar Produtos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 0, 16))); // NOI18N
 
@@ -610,11 +592,15 @@ public class RealizarPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_cbClassificacaoActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
-        if (!edComanda.getText().equalsIgnoreCase("")) {
-            RegrasPedido.getInstance().salvarPedidoEfetivamente(Integer.parseInt(edComanda.getText()));
-            JOptionPane.showMessageDialog(null, "Pedido Realizado com sucesso!");
-        } else {
-            JOptionPane.showMessageDialog(null, "Selecione uma comanda para alteração!");
+        try {
+            if (!edComanda.getText().equalsIgnoreCase("")) {
+                RegrasPedido.getInstance().salvarPedidoEfetivamente(Integer.parseInt(edComanda.getText()));
+                JOptionPane.showMessageDialog(null, "Pedido Realizado com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Selecione uma comanda para alteração!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro inesperado ao salvar pedido. Contate um programador. " + e);
         }
     }//GEN-LAST:event_btSalvarActionPerformed
 
@@ -637,14 +623,6 @@ public class RealizarPedido extends javax.swing.JFrame {
             Logger.getLogger(RealizarPedido.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btPesquisarActionPerformed
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-
-    }//GEN-LAST:event_formWindowClosed
-
-    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
-        //btSair.doClick();
-    }//GEN-LAST:event_formMouseExited
 
     private void carregaComandaSelecionada() {
         if (ComandaDAO.getInstance().getById(Integer.parseInt(edComandaPedido.getText())) != null) {

@@ -6,7 +6,6 @@
 package CLASSE;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,8 +16,6 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,7 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
     @NamedQuery(name = "Usuario.findByNmusuario", query = "SELECT u FROM Usuario u WHERE u.nmusuario = :nmusuario"),
     @NamedQuery(name = "Usuario.findByDsusuario", query = "SELECT u FROM Usuario u WHERE u.dsusuario = :dsusuario"),
-    @NamedQuery(name = "Usuario.findByDtatualizacao", query = "SELECT u FROM Usuario u WHERE u.dtatualizacao = :dtatualizacao"),
     @NamedQuery(name = "Usuario.findByIeativo", query = "SELECT u FROM Usuario u WHERE u.ieativo = :ieativo"),
     @NamedQuery(name = "Usuario.findByIetipopermissao", query = "SELECT u FROM Usuario u WHERE u.ietipopermissao = :ietipopermissao")})
 public class Usuario implements Serializable {
@@ -51,7 +47,7 @@ public class Usuario implements Serializable {
     private String nmusuario;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 150)
     @Column(name = "DSUSUARIO")
     private String dsusuario;
     @Basic(optional = false)
@@ -61,17 +57,15 @@ public class Usuario implements Serializable {
     private byte[] dssenha;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "DTATUALIZACAO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dtatualizacao;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IEATIVO")
     private short ieativo;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IETIPOPERMISSAO")
     private int ietipopermissao;
+    @Lob
+    @Column(name = "SALT")
+    private byte[] salt;
 
     public Usuario() {
     }
@@ -80,11 +74,10 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
-    public Usuario(Integer id, String dsusuario, byte[] dssenha, Date dtatualizacao, short ieativo, int ietipopermissao) {
+    public Usuario(Integer id, String dsusuario, byte[] dssenha, short ieativo, int ietipopermissao) {
         this.id = id;
         this.dsusuario = dsusuario;
         this.dssenha = dssenha;
-        this.dtatualizacao = dtatualizacao;
         this.ieativo = ieativo;
         this.ietipopermissao = ietipopermissao;
     }
@@ -121,14 +114,6 @@ public class Usuario implements Serializable {
         this.dssenha = dssenha;
     }
 
-    public Date getDtatualizacao() {
-        return dtatualizacao;
-    }
-
-    public void setDtatualizacao(Date dtatualizacao) {
-        this.dtatualizacao = dtatualizacao;
-    }
-
     public short getIeativo() {
         return ieativo;
     }
@@ -143,6 +128,14 @@ public class Usuario implements Serializable {
 
     public void setIetipopermissao(int ietipopermissao) {
         this.ietipopermissao = ietipopermissao;
+    }
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 
     @Override

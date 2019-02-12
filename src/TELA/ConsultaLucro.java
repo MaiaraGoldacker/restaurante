@@ -90,10 +90,12 @@ public class ConsultaLucro extends javax.swing.JFrame {
 
             SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
 
-            String str = fmt.format(cal.getTime());
-            edIni.setText(str);
-            edFim.setText(str);
+         //   String str = fmt.format(cal.getTime());
+            
+         //   edIni.setText(str);
+        //    edFim.setText(str);
         } catch (Exception e) {
+          JOptionPane.showMessageDialog(null, "Erro inesperado ao carregar tela. Contate um programador. " + e);  
         }
     }
 
@@ -321,6 +323,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
         jLabel6.setText("Total de vendas no período");
 
         edValorPeriodo.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        edValorPeriodo.setToolTipText("");
         edValorPeriodo.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -388,8 +391,8 @@ public class ConsultaLucro extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btSelecAdicionais)
                 .addContainerGap())
         );
@@ -475,7 +478,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
     private void limpa() {
         edIni.setText("");
         edFim.setText("");
-        
+
         edValorPeriodo.setText("");
         cbUsuario.setSelectedIndex(0);
         btAtualizarFiltro.doClick();
@@ -510,9 +513,15 @@ public class ConsultaLucro extends javax.swing.JFrame {
                     || (edIni.getText().equalsIgnoreCase("  /  /    ") && !edFim.getText().equalsIgnoreCase("  /  /    "))) {
                 JOptionPane.showMessageDialog(null, "Para utilizar o filtro de datas é preciso preencher as datas de inicio e fim");
             } else {
-
                 listaFiltroPag = RegrasPagamento.getInstance().atualizaListaFiltros(edIni.getText(), edFim.getText(), idUsuario, edIdPagamento.getText());
+                double vlPeriodo = 0;
+                for (Pagamento pagtos : listaFiltroPag) {
+                    List<Pedido> pedidos = PedidoDAO.getInstance().findAllByPagamento(pagtos.getId());
+                    RegrasPagamento rp = new RegrasPagamento();
+                    vlPeriodo += rp.calcularTotalPagto(pedidos, String.valueOf(pagtos.getTxdesconto()), String.valueOf(pagtos.getTxacrescimo()), true);
+                }
 
+                edValorPeriodo.setText(f.format(vlPeriodo));
                 PagamentoJtable tm = new PagamentoJtable(listaFiltroPag);
                 tbPagtos.setModel(tm);
 
@@ -520,7 +529,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
                 tbPedidos.setModel(tmp);
             }
         } catch (Exception e) {
-
+                JOptionPane.showMessageDialog(null, "Erro inesperado ao filtar. Contate um programador. " + e);  
         }
     }//GEN-LAST:event_btAtualizarFiltroActionPerformed
 
