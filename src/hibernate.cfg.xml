@@ -7,7 +7,5 @@
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/Trabalho1</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
-    <mapping resource="CLASSE/Produto.hbm.xml"/>
-    <mapping resource="CLASSE/Comanda.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

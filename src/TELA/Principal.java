@@ -248,7 +248,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btCadUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadUsuariosActionPerformed
-        CrudUsuario tela = new CrudUsuario();
+        CrudUsuario tela = new CrudUsuario(false);
         tela.setVisible(true);
     }//GEN-LAST:event_btCadUsuariosActionPerformed
 

@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
     @NamedQuery(name = "Usuario.findByNmusuario", query = "SELECT u FROM Usuario u WHERE u.nmusuario = :nmusuario"),
     @NamedQuery(name = "Usuario.findByDsusuario", query = "SELECT u FROM Usuario u WHERE u.dsusuario = :dsusuario"),
+    @NamedQuery(name = "Usuario.findByDssenha", query = "SELECT u FROM Usuario u WHERE u.dssenha = :dssenha"),
     @NamedQuery(name = "Usuario.findByIeativo", query = "SELECT u FROM Usuario u WHERE u.ieativo = :ieativo"),
     @NamedQuery(name = "Usuario.findByIetipopermissao", query = "SELECT u FROM Usuario u WHERE u.ietipopermissao = :ietipopermissao")})
 public class Usuario implements Serializable {
@@ -52,9 +53,9 @@ public class Usuario implements Serializable {
     private String dsusuario;
     @Basic(optional = false)
     @NotNull
-    @Lob
+    @Size(min = 1, max = 500)
     @Column(name = "DSSENHA")
-    private byte[] dssenha;
+    private String dssenha;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IEATIVO")
@@ -74,7 +75,7 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
-    public Usuario(Integer id, String dsusuario, byte[] dssenha, short ieativo, int ietipopermissao) {
+    public Usuario(Integer id, String dsusuario, String dssenha, short ieativo, int ietipopermissao) {
         this.id = id;
         this.dsusuario = dsusuario;
         this.dssenha = dssenha;
@@ -106,11 +107,11 @@ public class Usuario implements Serializable {
         this.dsusuario = dsusuario;
     }
 
-    public byte[] getDssenha() {
+    public String getDssenha() {
         return dssenha;
     }
 
-    public void setDssenha(byte[] dssenha) {
+    public void setDssenha(String dssenha) {
         this.dssenha = dssenha;
     }
 

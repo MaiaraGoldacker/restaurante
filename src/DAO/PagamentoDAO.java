@@ -1,14 +1,12 @@
 package DAO;
 
 import CLASSE.Pagamento;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import REGRAS.Utilidades;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -45,7 +43,6 @@ public class PagamentoDAO {
     }
 
     public void removeById(final int id) {
-        //   remove(entityManager.find(Produto.class, id));
         Pagamento p = entityManager.find(Pagamento.class, id);
         merge(p);
     }
@@ -53,36 +50,20 @@ public class PagamentoDAO {
     @SuppressWarnings("unchecked")
     public List<Pagamento> findAll() throws SQLException {
         List<Pagamento> prod = new ArrayList<Pagamento>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-        Statement stmt = conn.createStatement();
-        ResultSet rs;
-        rs = stmt.executeQuery("SELECT ID FROM Pagamento");
+        Statement stmt = Utilidades.getInstance().pegaConexaoBD().createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT ID FROM Pagamento");
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
 
     public List<Pagamento> findAllPersonalizado(String dtIni, String dtFim, int idUsuario, int idPagto) throws SQLException {
         List<Pagamento> prod = new ArrayList<Pagamento>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
         PreparedStatement stmt = null;
-
-        String sql = "";
-
-        if (!dtIni.equalsIgnoreCase("  /  /    ") && !dtIni.equalsIgnoreCase("  /  /    ")) {
-            dtIni = dtIni + " 00:00:00";
-            dtFim = dtFim + " 23:59:59";
-        } else {
-            dtIni = "";
-            dtFim = "";
-        }
-
-        sql = " select pa.ID from pagamento pa "
+        String sql = " select pa.ID from pagamento pa "
                 + " inner join pedido as pe on pa.id = pe.pagamento_id "
                 + " inner join produto as pr on  pr.id = pe.produto_id "
                 + " where 1=1 "
@@ -93,7 +74,7 @@ public class PagamentoDAO {
                 + " group by pa.id "
                 + " order by pa.DTATULIZACAO ";
 
-        stmt = conn.prepareStatement(sql);
+        stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement(sql);
 
         stmt.setString(1, dtIni);
         stmt.setString(2, dtFim);
@@ -109,7 +90,7 @@ public class PagamentoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
 
@@ -134,19 +115,6 @@ public class PagamentoDAO {
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(pagamento);
-            entityManager.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-    }
-
-    private void remove(Pagamento pagamento) {
-        try {
-            entityManager.getTransaction().begin();
-            pagamento
-                    = entityManager.find(Pagamento.class, pagamento.getId());
-            entityManager.remove(pagamento);
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();

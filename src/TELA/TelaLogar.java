@@ -8,6 +8,9 @@ package TELA;
 import DAO.UsuarioDAO;
 import CLASSE.Usuario;
 import REGRAS.Passwords;
+import REGRAS.RegrasGerenciamento;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +28,7 @@ public class TelaLogar extends javax.swing.JFrame {
     /**
      * Creates new form cadastroProdutos
      */
-    public TelaLogar() {
+    public TelaLogar(){
         initComponents();
         btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
@@ -181,38 +184,18 @@ public class TelaLogar extends javax.swing.JFrame {
 
     private void btLogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLogarActionPerformed
         try {
-            boolean logar = false;
-            List<Usuario> usua = UsuarioDAO.getInstance().findByUser(edUsuario.getText());
-
-            for (Usuario usuario : usua) {
-                if (usuario.getDsusuario().equals(trim(edUsuario.getText()))) {
-                    Passwords pass = new Passwords();
-                    char[] c = edSenha.getText().toCharArray();
-                    byte[] salt = usuario.getSalt();
-                    try {
-                        if (!pass.isExpectedPassword(c, salt, usuario.getDssenha())) {
-                            UsuarioDAO.getInstance().setUsuarioLogado(usuario);
-                            logar = true;
-                            break;
-                        }
-                    } catch (InvalidKeySpecException ex) {
-                        Logger.getLogger(TelaLogar.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                }
-            }
-
-            if (logar) {
-                dispose();
-
+            RegrasGerenciamento regra = new RegrasGerenciamento();
+            if (regra.verificaLogin(edUsuario.getText(), edSenha.getText()) == 1) {
+                CrudUsuario tela = new CrudUsuario(true);
+                tela.setVisible(true);
+            } else if (regra.verificaLogin(edUsuario.getText(), edSenha.getText()) == 2){
                 Principal tela = new Principal();
                 tela.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos, verifique");
+                JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos. Verifique");
             }
+        } catch (Exception e) {
 
-        } catch (SQLException ex) {
-            Logger.getLogger(TelaLogar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btLogarActionPerformed
 
@@ -243,16 +226,24 @@ public class TelaLogar extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaLogar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaLogar.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaLogar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaLogar.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaLogar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaLogar.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaLogar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaLogar.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -275,7 +266,8 @@ public class TelaLogar extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaLogar().setVisible(true);
+               
+                    new TelaLogar().setVisible(true);              
             }
         });
 

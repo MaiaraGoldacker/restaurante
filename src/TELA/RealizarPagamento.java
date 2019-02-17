@@ -14,7 +14,7 @@ import CLASSE.AdicionalPedido;
 import CLASSE.Comanda;
 import CLASSE.Pedido;
 import REGRAS.RegrasPagamento;
-import TELA.JTABLE.RealizarPedido.PedidoJtable;
+import TELA.JTABLEMAP.CUSTOMIZADA.PedidoJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;

@@ -8,6 +8,7 @@ package TELA;
 import CLASSE.Adicional;
 
 import REGRAS.RegrasGerenciamento;
+import REPORT.IPedidosReport;
 import TELA.JTABLEMAP.AdicionalJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -55,7 +56,7 @@ public class CrudAdicional extends javax.swing.JFrame {
             btExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/exc.png")));
             btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
             btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
-
+            btImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/print.png")));
             DecimalFormat dFormat = new DecimalFormat("#,###,##0.00");
             NumberFormatter Formatter = new NumberFormatter(dFormat);
             Formatter.setFormat(dFormat);
@@ -102,6 +103,7 @@ public class CrudAdicional extends javax.swing.JFrame {
         btAlterar = new javax.swing.JButton();
         btExcluir = new javax.swing.JButton();
         btSair = new javax.swing.JButton();
+        btImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAutoRequestFocus(false);
@@ -255,12 +257,22 @@ public class CrudAdicional extends javax.swing.JFrame {
             }
         });
 
+        btImprimir.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btImprimir.setText("Imprimir");
+        btImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(156, Short.MAX_VALUE)
+                .addContainerGap(119, Short.MAX_VALUE)
+                .addComponent(btImprimir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btLimpar)
@@ -281,7 +293,8 @@ public class CrudAdicional extends javax.swing.JFrame {
                     .addComponent(btExcluir)
                     .addComponent(btAlterar)
                     .addComponent(btLimpar)
-                    .addComponent(btSalvar))
+                    .addComponent(btSalvar)
+                    .addComponent(btImprimir))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
@@ -393,6 +406,15 @@ public class CrudAdicional extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tbComandasMouseClicked
 
+    private void btImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImprimirActionPerformed
+        IPedidosReport i = new IPedidosReport();
+        try {
+            i.gerarRelatorioPadrao("C:\\Atividade\\Pedidos\\src\\IREPORTXML\\REL04RelatorioAdicionais.jasper", "Relatório de Adicionais");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btImprimirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -448,6 +470,7 @@ public class CrudAdicional extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAlterar;
     private javax.swing.JButton btExcluir;
+    private javax.swing.JButton btImprimir;
     private javax.swing.JButton btLimpar;
     private javax.swing.JButton btSair;
     private javax.swing.JButton btSalvar;

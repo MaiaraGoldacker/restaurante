@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TELA.JTABLE.RealizarPedido;
+package TELA.JTABLEMAP.CUSTOMIZADA;
 
 import DAO.PedidoDAO;
 import DAO.ProdutoDAO;

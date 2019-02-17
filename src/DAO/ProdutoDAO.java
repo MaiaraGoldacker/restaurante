@@ -1,6 +1,7 @@
 package DAO;
 
 import CLASSE.Produto;
+import REGRAS.Utilidades;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,49 +40,45 @@ public class ProdutoDAO {
     }
 
     public void removeById(final int id) {
-      Produto p = entityManager.find(Produto.class, id);
-      p.setIeativo((short) 0);
-      merge(p);
+        Produto p = entityManager.find(Produto.class, id);
+        p.setIeativo((short) 0);
+        merge(p);
     }
 
     @SuppressWarnings("unchecked")
     public List<Produto> findAll() throws SQLException {
         List<Produto> prod = new ArrayList<Produto>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-        Statement stmt = conn.createStatement();
-        ResultSet rs;
-        rs = stmt.executeQuery("SELECT ID FROM Produto WHERE IEATIVO = 1");
+        Statement stmt = Utilidades.getInstance().pegaConexaoBD().createStatement();
+
+        ResultSet rs = stmt.executeQuery("SELECT ID FROM Produto WHERE IEATIVO = 1");
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
-    
+
     public List<Produto> findAllbyClassif(int idClassificacao) throws SQLException {
         List<Produto> prod = new ArrayList<Produto>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-     
+
         PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Produto WHERE IEATIVO = 1 and classificacao = ?");
+        stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Produto WHERE IEATIVO = 1 and classificacao = ?");
         stmt.setInt(1, idClassificacao);
         ResultSet rs = stmt.executeQuery();
-       
+
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
-    
+
     public Produto getById(final int id) {
         return entityManager.find(Produto.class, id);
     }
 
-    public void persist(Produto produto) {   
+    public void persist(Produto produto) {
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(produto);
@@ -96,18 +93,6 @@ public class ProdutoDAO {
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(produto);
-            entityManager.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-    }
-
-    private void remove(Produto produto) {
-        try {
-            entityManager.getTransaction().begin();
-            produto = entityManager.find(Produto.class, produto.getId());
-            entityManager.remove(produto);
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();

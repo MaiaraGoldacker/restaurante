@@ -1,6 +1,7 @@
 package DAO;
 
 import CLASSE.Pedido;
+import REGRAS.Utilidades;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -45,37 +46,28 @@ public class PedidoDAO {
 
     public void removeById(final int id) {
         remove(entityManager.find(Pedido.class, id));
-       // Pedido p = entityManager.find(Pedido.class, id);
-        //merge(p);
     }
 
     @SuppressWarnings("unchecked")
     public List<Pedido> findAll(int comanda) throws SQLException {
-        List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-
+        List<Pedido> ped = new ArrayList<Pedido>();
         PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where COMANDA_ID = ?");
+        stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where COMANDA_ID = ?");
         stmt.setInt(1, comanda);
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            prod.add(getById(rs.getInt("ID")));
+            ped.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
-        return prod;
+        Utilidades.getInstance().pegaConexaoBD().close();
+        return ped;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<Pedido> findAllByPagamento(int pagamento) throws SQLException {
         List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-
-        PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where PAGAMENTO_ID = ?");
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where PAGAMENTO_ID = ?");
         stmt.setInt(1, pagamento);
         ResultSet rs = stmt.executeQuery();
 
@@ -83,17 +75,15 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
-    
-     public List<Pedido> findAllAtender(int stPedido, int comanda) throws SQLException {
+
+    public List<Pedido> findAllAtender(int stPedido, int comanda) throws SQLException {
         List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
 
         PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where STPEDIDO = ? AND COMANDA_ID = ?");
+        stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where STPEDIDO = ? AND COMANDA_ID = ?");
         stmt.setInt(1, stPedido);
         stmt.setInt(2, comanda);
         ResultSet rs = stmt.executeQuery();
@@ -102,17 +92,14 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
-     
-     public List<Pedido> findAllAtendimento(int stPedido, int comanda) throws SQLException {
-        List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
 
-        PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where STPEDIDO <> ? AND COMANDA_ID = ?");
+    public List<Pedido> findAllAtendimento(int stPedido, int comanda) throws SQLException {
+        List<Pedido> prod = new ArrayList<Pedido>();
+
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where STPEDIDO <> ? AND COMANDA_ID = ?");
         stmt.setInt(1, stPedido);
         stmt.setInt(2, comanda);
         ResultSet rs = stmt.executeQuery();
@@ -121,18 +108,15 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
 
     @SuppressWarnings("unchecked")
     public List<Pedido> findAtualizarPedido(int comanda) throws SQLException {
         List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
 
-        PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where DTATUALIZACAO IS NULL AND COMANDA_ID = ?");
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where DTATUALIZACAO IS NULL AND COMANDA_ID = ?");
         stmt.setInt(1, comanda);
         ResultSet rs = stmt.executeQuery();
 
@@ -140,24 +124,21 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
 
     @SuppressWarnings("unchecked")
     public List<Pedido> findAllPedidos() throws SQLException {
         List<Pedido> prod = new ArrayList<Pedido>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root"); 
-        PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM Pedido where STPEDIDO = 1 GROUP BY COMANDA_ID ORDER BY  DTATUALIZACAO");      
+       PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM Pedido where STPEDIDO = 1 GROUP BY COMANDA_ID ORDER BY  DTATUALIZACAO");
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return prod;
     }
 
@@ -166,7 +147,6 @@ public class PedidoDAO {
     }
 
     public void persist(Pedido pedido) {
-        //getEntityManager();
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(pedido);

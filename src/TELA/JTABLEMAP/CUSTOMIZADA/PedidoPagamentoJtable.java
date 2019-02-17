@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TELA.JTABLE.RealizarPedido;
+package TELA.JTABLEMAP.CUSTOMIZADA;
 
 import DAO.ProdutoDAO;
 import CLASSE.Pedido;
 import CLASSE.Produto;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;

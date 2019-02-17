@@ -6,15 +6,22 @@
 package TELA;
 
 import CLASSE.Usuario;
+import DAO.UsuarioDAO;
+import REGRAS.Passwords;
 import REGRAS.RegrasGerenciamento;
+import REPORT.IPedidosReport;
 import TELA.JTABLEMAP.UsuarioJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import sun.security.util.Password;
 
 /**
  *
@@ -25,11 +32,46 @@ public class CrudUsuario extends javax.swing.JFrame {
     /**
      * Creates new form cadastroProdutos
      */
-    public CrudUsuario() {
+    private boolean primeiroLogin = false;
+    
+    public CrudUsuario(boolean primeiroLogin) {
         initComponents();
         carregaTabela();
         carregaDetalhesTela();
+        this.primeiroLogin = primeiroLogin;
+        if (primeiroLogin) {
+            carregaPrimeiroLogin();
+        }
 
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                verificaPrimeiroLogin();
+            }
+        });
+    }
+
+    private void carregaPrimeiroLogin() {
+        edUsuario.setText("admin");
+        ednomeUser.setText("admin");
+        cbPermissao.setSelectedIndex(0);
+    }
+
+    private void verificaPrimeiroLogin() {
+        try {
+            List<Usuario> users = UsuarioDAO.getInstance().findByUser("admin");
+            if (users.size() == 1) {
+                for (Usuario usua : users) {
+                    Passwords pass = new Passwords();
+                    String securePassword = pass.getSecurePassword("admin", usua.getSalt());
+
+                    if (usua.getDssenha().equalsIgnoreCase(securePassword)) {
+                        JOptionPane.showMessageDialog(null, "Senha administrativa precisa ser trocada no primeiro login!");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao verificar primeiro login, verifique! " + e);
+        }
     }
 
     public void carregaDetalhesTela() {
@@ -39,6 +81,7 @@ public class CrudUsuario extends javax.swing.JFrame {
         btExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/exc.png")));
         btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
+        btImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/print.png")));
         this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/user.png")).getImage());
 
         setDefaultCloseOperation(RealizarPedido.DO_NOTHING_ON_CLOSE);
@@ -76,6 +119,7 @@ public class CrudUsuario extends javax.swing.JFrame {
         btAlterar = new javax.swing.JButton();
         btExcluir = new javax.swing.JButton();
         btSair = new javax.swing.JButton();
+        btImprimir = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         ednomeUser = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -86,6 +130,8 @@ public class CrudUsuario extends javax.swing.JFrame {
         cbPermissao = new javax.swing.JComboBox<>();
         edId = new javax.swing.JTextField();
         edSenha = new javax.swing.JPasswordField();
+        jLabel8 = new javax.swing.JLabel();
+        edSenhaConfirmar = new javax.swing.JPasswordField();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -166,12 +212,22 @@ public class CrudUsuario extends javax.swing.JFrame {
             }
         });
 
+        btImprimir.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btImprimir.setText("Imprimir");
+        btImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(191, Short.MAX_VALUE)
+                .addContainerGap(164, Short.MAX_VALUE)
+                .addComponent(btImprimir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btSalvar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btLimpar)
@@ -192,7 +248,8 @@ public class CrudUsuario extends javax.swing.JFrame {
                     .addComponent(btExcluir)
                     .addComponent(btAlterar)
                     .addComponent(btLimpar)
-                    .addComponent(btSalvar))
+                    .addComponent(btSalvar)
+                    .addComponent(btImprimir))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -228,30 +285,40 @@ public class CrudUsuario extends javax.swing.JFrame {
         edSenha.setBackground(new java.awt.Color(204, 204, 255));
         edSenha.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
 
+        jLabel8.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        jLabel8.setText("Confirmar Senha");
+
+        edSenhaConfirmar.setBackground(new java.awt.Color(204, 204, 255));
+        edSenhaConfirmar.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel9)
                     .addComponent(jLabel5)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(edId, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(ednomeUser, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(edUsuario)
-                            .addComponent(cbPermissao, 0, 389, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(edSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(edId, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(ednomeUser))
+                            .addComponent(edUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                            .addComponent(cbPermissao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(edSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                            .addComponent(edSenhaConfirmar))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -267,16 +334,15 @@ public class CrudUsuario extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(jLabel5)
                     .addComponent(edSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(edId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(cbPermissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(cbPermissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edSenhaConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -332,7 +398,7 @@ public class CrudUsuario extends javax.swing.JFrame {
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
         try {
-            String retorno = RegrasGerenciamento.getInstance().salvarUsuario(edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), cbPermissao.getSelectedIndex());
+            String retorno = RegrasGerenciamento.getInstance().salvarUsuario(edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), edSenhaConfirmar.getText(), cbPermissao.getSelectedIndex());
 
             if (retorno.equalsIgnoreCase("")) {
                 carregaTabela();
@@ -351,9 +417,8 @@ public class CrudUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btLimparActionPerformed
 
     private void btAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAlterarActionPerformed
-        String retorno;
         try {
-            retorno = RegrasGerenciamento.getInstance().alterarUsuario(Integer.parseInt(edId.getText()), edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), cbPermissao.getSelectedIndex());
+            String retorno = RegrasGerenciamento.getInstance().alterarUsuario(Integer.parseInt(edId.getText()), edUsuario.getText(), ednomeUser.getText(), edSenha.getText(), edSenhaConfirmar.getText(), cbPermissao.getSelectedIndex());
 
             if (retorno.equalsIgnoreCase("")) {
                 carregaTabela();
@@ -363,6 +428,12 @@ public class CrudUsuario extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, retorno);
             }
         } catch (InvalidKeySpecException ex) {
+            Logger.getLogger(CrudUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(CrudUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(CrudUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchProviderException ex) {
             Logger.getLogger(CrudUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btAlterarActionPerformed
@@ -375,7 +446,11 @@ public class CrudUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_btExcluirActionPerformed
 
     private void btSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSairActionPerformed
-        dispose();
+        if (primeiroLogin) {
+            verificaPrimeiroLogin();
+        } else {
+            dispose();
+        }
     }//GEN-LAST:event_btSairActionPerformed
 
     private void tbUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbUsuariosMouseClicked
@@ -396,12 +471,22 @@ public class CrudUsuario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tbUsuariosMouseClicked
 
+    private void btImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImprimirActionPerformed
+        IPedidosReport i = new IPedidosReport();
+        try {
+            i.gerarRelatorioPadrao("C:\\Atividade\\Pedidos\\src\\IREPORTXML\\REL02RelatorioUsuarios.jasper", "Relatório de Usuários");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btImprimirActionPerformed
+
     private void limpa() {
         ednomeUser.setText("");
         edId.setText("");
         edUsuario.setText("");
         edSenha.setText("");
         cbPermissao.setSelectedIndex(2);
+        edSenhaConfirmar.setText("");
         carregaTabela();
     }
 
@@ -443,7 +528,7 @@ public class CrudUsuario extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CrudUsuario().setVisible(true);
+                new CrudUsuario(false).setVisible(true);
             }
         });
 
@@ -452,18 +537,21 @@ public class CrudUsuario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAlterar;
     private javax.swing.JButton btExcluir;
+    private javax.swing.JButton btImprimir;
     private javax.swing.JButton btLimpar;
     private javax.swing.JButton btSair;
     private javax.swing.JButton btSalvar;
     private javax.swing.JComboBox<String> cbPermissao;
     private javax.swing.JTextField edId;
     private javax.swing.JPasswordField edSenha;
+    private javax.swing.JPasswordField edSenhaConfirmar;
     private javax.swing.JTextField edUsuario;
     private javax.swing.JTextField ednomeUser;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

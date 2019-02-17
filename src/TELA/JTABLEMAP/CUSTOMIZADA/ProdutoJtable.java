@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TELA.JTABLE.RealizarPedido;
+package TELA.JTABLEMAP.CUSTOMIZADA;
 
 import DAO.ProdutoDAO;
 import CLASSE.Produto;
 import java.sql.SQLException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -36,7 +35,7 @@ public class ProdutoJtable extends AbstractTableModel {
         this.fireTableDataChanged();
     }
 
-    public String getColumnName(int num) {
+    public String getColumnName1(int num) {
         return this.colunas[num];
     }
 

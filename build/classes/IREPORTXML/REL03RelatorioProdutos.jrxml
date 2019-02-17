@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="REL03RelatorioProdutos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="33eac2c6-af52-4dd1-a78d-d4670add49f2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[Select * from produto where ieativo = 1 order by nmproduto]]>
+	</queryString>
+	<field name="ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NMPRODUTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DSOBSERVACAOPRODUTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CLASSIFICACAO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IEATIVO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DTATUALIZACAO" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VLPRODUTO" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="96" y="35" width="376" height="20" uuid="78eba8f2-c1ed-4eb8-a7dc-f739a7202edd"/>
+				<textElement>
+					<font fontName="Arial" size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REL03 - RELATÓRIO DE PRODUTOS ATIVOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="20" width="138" height="20" uuid="288e306a-2f2e-44ff-8b32-d473e050f044"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[nº Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="138" y="20" width="138" height="20" uuid="94fcac67-7587-4287-b72c-695c5f927abf"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="276" y="20" width="138" height="20" uuid="eda3a00c-1342-4d17-b43c-7c4baf703681"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="20" width="138" height="20" uuid="8c752a37-6d34-409f-8786-a0e5e7f3a4c6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor de venda]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="28" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="0" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="f24c49ba-b05a-4ab5-928b-1f53fb134f00">
+					<printWhenExpression><![CDATA[new Boolean( $V{COLUMN_COUNT}.intValue() % 2 != 0 )]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="17" y="0" width="103" height="20" uuid="35e38e42-20b5-47e5-8870-25dfcd3fcbce"/>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="138" y="0" width="138" height="20" uuid="635c8755-d802-4847-b7b0-32bffe2f24f3"/>
+				<textFieldExpression><![CDATA[$F{NMPRODUTO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="0" width="138" height="20" uuid="bd16ef98-a64c-42bc-bb4b-6683db4a6572"/>
+				<textFieldExpression><![CDATA[$F{DSOBSERVACAOPRODUTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="414" y="0" width="138" height="20" uuid="ec7707bb-8fdb-45fb-8e32-e0fcb1379aa3"/>
+				<textFieldExpression><![CDATA[$F{VLPRODUTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

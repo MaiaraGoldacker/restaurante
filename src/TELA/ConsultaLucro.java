@@ -11,30 +11,26 @@ import CLASSE.Usuario;
 import DAO.PedidoDAO;
 import DAO.UsuarioDAO;
 import REGRAS.RegrasPagamento;
-import TELA.JTABLE.RealizarPedido.PedidoJtable;
+import REGRAS.Utilidades;
+import REPORT.IPedidosReport;
+import TELA.JTABLEMAP.CUSTOMIZADA.PedidoJtable;
 import TELA.JTABLEMAP.PagamentoJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListDataListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  *
@@ -62,6 +58,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
         btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
         btSelecAdicionais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/more.png")));
+        btImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/print.png")));
         this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/paygrande.png")).getImage());
         edPedido.setVisible(false);
         btAtualizarFiltro.doClick();
@@ -74,26 +71,10 @@ public class ConsultaLucro extends javax.swing.JFrame {
         });
         this.setExtendedState(MAXIMIZED_BOTH);
 
-        try {
-            List<Usuario> lista = UsuarioDAO.getInstance().findAll();
-            Vector vetor = new Vector();
-
-            vetor.add("Sem filtro");
-            for (Usuario u : lista) {
-                vetor.add(u.getDsusuario());
-            }
-            DefaultComboBoxModel m = new DefaultComboBoxModel(vetor);
-            cbUsuario.setModel(m);
-
+        try {          
+            cbUsuario.setModel(Utilidades.getInstance().carregaComboUsuario());
             edIni.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("##/##/####")));
             edFim.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("##/##/####")));
-
-            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
-
-         //   String str = fmt.format(cal.getTime());
-            
-         //   edIni.setText(str);
-        //    edFim.setText(str);
         } catch (Exception e) {
           JOptionPane.showMessageDialog(null, "Erro inesperado ao carregar tela. Contate um programador. " + e);  
         }
@@ -125,6 +106,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         btLimpar = new javax.swing.JButton();
         btSair = new javax.swing.JButton();
+        btImprimir = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -277,12 +259,22 @@ public class ConsultaLucro extends javax.swing.JFrame {
             }
         });
 
+        btImprimir.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btImprimir.setText("Imprimir");
+        btImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(435, Short.MAX_VALUE)
+                .addContainerGap(344, Short.MAX_VALUE)
+                .addComponent(btImprimir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btLimpar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btSair)
@@ -294,7 +286,8 @@ public class ConsultaLucro extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btSair)
-                    .addComponent(btLimpar))
+                    .addComponent(btLimpar)
+                    .addComponent(btImprimir))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -432,7 +425,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(471, Short.MAX_VALUE)
+                .addContainerGap(463, Short.MAX_VALUE)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -494,16 +487,8 @@ public class ConsultaLucro extends javax.swing.JFrame {
     }//GEN-LAST:event_btSairActionPerformed
 
     private void btAtualizarFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAtualizarFiltroActionPerformed
-        try {
-            List<Usuario> lista = UsuarioDAO.getInstance().findAll();
-            Vector vetor = new Vector();
-
-            vetor.add("Sem filtro");
-            for (Usuario u : lista) {
-                vetor.add(u.getDsusuario());
-            }
-            DefaultComboBoxModel m = new DefaultComboBoxModel(vetor);
-            List<Usuario> u = UsuarioDAO.getInstance().findByUser(String.valueOf(m.getElementAt(cbUsuario.getSelectedIndex())));
+        try {         
+            List<Usuario> u = UsuarioDAO.getInstance().findByUser(String.valueOf(Utilidades.getInstance().carregaComboUsuario().getElementAt(cbUsuario.getSelectedIndex())));
             int idUsuario = 0;
             for (Usuario usu : u) {
                 idUsuario = usu.getId();
@@ -570,6 +555,25 @@ public class ConsultaLucro extends javax.swing.JFrame {
             Logger.getLogger(RealizarPedido.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btSelecAdicionaisActionPerformed
+
+    private void btImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImprimirActionPerformed
+      IPedidosReport i = new IPedidosReport();
+        try {
+            i.gerarRelatorioLucro(edIdPagamento.getText(), cbUsuario.getSelectedIndex(), edIni.getText(), edFim.getText());
+        } catch (JRException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btImprimirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -673,6 +677,7 @@ public class ConsultaLucro extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAtualizarFiltro;
+    private javax.swing.JButton btImprimir;
     private javax.swing.JButton btLimpar;
     private javax.swing.JButton btSair;
     private javax.swing.JButton btSelecAdicionais;

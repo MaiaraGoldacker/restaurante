@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
 /**
  *
  * @author maiara
@@ -114,21 +113,8 @@ public class RegrasPagamento {
 
     public List<Pagamento> atualizaListaFiltros(String dataIni, String dataFim, int idUsuario, String idpagto) throws ParseException, SQLException {
         List<Pagamento> pags = new ArrayList<Pagamento>();
-        if (!dataIni.equalsIgnoreCase("  /  /    ") && !dataFim.equalsIgnoreCase("  /  /    ")) {
-
-            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            df.setLenient(false);
-            Date d = df.parse(dataIni);
-            df = new SimpleDateFormat("yyyy-MM-dd");
-            dataIni = df.format(d);
-
-            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
-            df2.setLenient(false);
-            Date dff = df2.parse(dataFim);
-            df2 = new SimpleDateFormat("yyyy-MM-dd");
-            dataFim = df2.format(dff);
-
-        }
+        dataIni = Utilidades.getInstance().formataDataFiltro(dataIni, true);
+        dataFim = Utilidades.getInstance().formataDataFiltro(dataFim, false);
         int id = 0;
         if (!idpagto.equalsIgnoreCase("")) {
             id = Integer.parseInt(idpagto);

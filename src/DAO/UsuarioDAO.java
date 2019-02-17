@@ -1,6 +1,7 @@
 package DAO;
 
 import CLASSE.Usuario;
+import REGRAS.Utilidades;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,33 +49,28 @@ public class UsuarioDAO {
     @SuppressWarnings("unchecked")
     public List<Usuario> findAll() throws SQLException {
         List<Usuario> usua = new ArrayList<Usuario>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-        Statement stmt = conn.createStatement();
-        ResultSet rs;
-        rs = stmt.executeQuery("SELECT ID FROM USUARIO WHERE IEATIVO = 1");
+        Statement stmt = Utilidades.getInstance().pegaConexaoBD().createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT ID FROM USUARIO WHERE IEATIVO = 1");
+
         while (rs.next()) {
             usua.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return usua;
     }
 
     public List<Usuario> findByUser(String dsUsuario) throws SQLException {
         List<Usuario> usua = new ArrayList<Usuario>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
 
-        PreparedStatement stmt;
-        stmt = conn.prepareStatement("SELECT ID FROM USUARIO WHERE IEATIVO = 1 AND DSUSUARIO = ?");
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement("SELECT ID FROM USUARIO WHERE IEATIVO = 1 AND DSUSUARIO = ?");
         stmt.setString(1, dsUsuario);
         ResultSet rs = stmt.executeQuery();
-           while (rs.next()) {
+        while (rs.next()) {
             usua.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return usua;
     }
 
@@ -83,7 +79,7 @@ public class UsuarioDAO {
     }
 
     public void persist(Usuario usuario) {
-       
+
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(usuario);
@@ -93,56 +89,37 @@ public class UsuarioDAO {
             entityManager.getTransaction().rollback();
         }
     }
-    
-      public List<Usuario> findAllMaisVendeu() throws SQLException {
+
+    public List<Usuario> findAllMaisVendeu() throws SQLException {
         List<Usuario> usua = new ArrayList<Usuario>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-     
-        PreparedStatement stmt;
-        
-        String sql = "";
-        
-       sql = " select usu.id, count(usu.id) apelido, usu.nmUsuario from pagamento pa  inner join usuario as usu on pa.usuario_id = usu.id\n" +
-                "where 1=1\n" +
-                "and usu.ieativo = 1\n" +
-                "and pa.ieativo = 1\n" +
-                "group by usu.id\n" +
-                "order by count(usu.id) desc\n" ;
-        
-        stmt = conn.prepareStatement(sql);       
+
+        String sql = " select usu.id, count(usu.id) apelido, usu.nmUsuario from pagamento pa  inner join usuario as usu on pa.usuario_id = usu.id\n"
+                + "where 1=1\n"
+                + "and usu.ieativo = 1\n"
+                + "and pa.ieativo = 1\n"
+                + "group by usu.id\n"
+                + "order by count(usu.id) desc\n";
+
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
-       
+
         while (rs.next()) {
             usua.add(getById(rs.getInt("ID")));
-            
-             for (Usuario a : usua) {
+
+            for (Usuario a : usua) {
                 if (a.getId() == rs.getInt("ID")) {
                     a.setDsusuario(rs.getString("apelido"));
                 }
             }
         }
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return usua;
     }
-
 
     public void merge(Usuario usuario) {
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(usuario);
-            entityManager.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-    }
-
-    private void remove(Usuario usuario) {
-        try {
-            entityManager.getTransaction().begin();
-            usuario = entityManager.find(Usuario.class, usuario.getId());
-            entityManager.remove(usuario);
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();

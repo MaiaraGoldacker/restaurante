@@ -1,8 +1,7 @@
 package DAO;
 
 import CLASSE.Adicional;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import REGRAS.Utilidades;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +38,6 @@ public class AdicionaisDAO {
         if (entityManager == null) {
             entityManager = factory.createEntityManager();
         }
-
         return entityManager;
     }
 
@@ -47,35 +45,25 @@ public class AdicionaisDAO {
         Adicional a = entityManager.find(Adicional.class, id);
         a.setIeativo((short) 0);
         merge(a);
-        //remove(entityManager.find(Comanda.class, id));
     }
 
     @SuppressWarnings("unchecked")
     public List<Adicional> findAll() throws SQLException {
         List<Adicional> com = new ArrayList<Adicional>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-        Statement stmt = conn.createStatement();
-        ResultSet rs;
-        rs = stmt.executeQuery("SELECT ID FROM ADICIONAL WHERE IEATIVO=1");
+        Statement stmt = Utilidades.getInstance().pegaConexaoBD().createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT ID FROM ADICIONAL WHERE IEATIVO=1");
         while (rs.next()) {
             com.add(getById(rs.getInt("ID")));
         }
 
-        conn.close();
+        Utilidades.getInstance().pegaConexaoBD().close();
         return com;
     }
 
     public List<Adicional> findAllMaisVendidos() throws SQLException {
         List<Adicional> adic = new ArrayList<Adicional>();
-        String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
 
-        PreparedStatement stmt;
-
-        String sql = "";
-
-        sql = " select a.id, count(ap.id) apelido from pagamento pa  inner join pedido as pe on pa.id = pe.pagamento_id  \n"
+        String sql = " select a.id, count(ap.id) apelido from pagamento pa  inner join pedido as pe on pa.id = pe.pagamento_id  \n"
                 + "inner join produto as pr on  pr.id = pe.produto_id  \n"
                 + "inner join adicional_pedido ap on ap.pedido_id = pe.id and ap.produto_id = pr.id\n"
                 + "inner join adicional a on a.id = ap.adicional_id \n"
@@ -85,7 +73,7 @@ public class AdicionaisDAO {
                 + "group by a.id\n"
                 + "order by count(ap.id) desc";
 
-        stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt = Utilidades.getInstance().pegaConexaoBD().prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
@@ -97,8 +85,7 @@ public class AdicionaisDAO {
                 }
             }
         }
-        conn.close();
-
+        Utilidades.getInstance().pegaConexaoBD().close();
         return adic;
     }
 
@@ -106,8 +93,7 @@ public class AdicionaisDAO {
         return entityManager.find(Adicional.class, id);
     }
 
-    public void persist(Adicional adicional) {
-        //getEntityManager();
+    public void persist(Adicional adicional) {    
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(adicional);
@@ -122,18 +108,6 @@ public class AdicionaisDAO {
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(adicional);
-            entityManager.getTransaction().commit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            entityManager.getTransaction().rollback();
-        }
-    }
-
-    private void remove(Adicional adicional) {
-        try {
-            entityManager.getTransaction().begin();
-            adicional = entityManager.find(Adicional.class, adicional.getId());
-            entityManager.remove(adicional);
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -8,6 +8,8 @@ import CLASSE.Adicional;
 import CLASSE.Comanda;
 import CLASSE.Produto;
 import CLASSE.Usuario;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -129,8 +131,9 @@ public class RegrasGerenciamento {
         return "";
     }
 
-    public String salvarUsuario(String usuario, String nome, String senha, int permissao) throws InvalidKeySpecException, SQLException {
+    public String salvarUsuario(String usuario, String nome, String senha, String senhaConfirmar, int permissao) throws InvalidKeySpecException, SQLException, NoSuchAlgorithmException, NoSuchProviderException {
         List<Usuario> usuarios = UsuarioDAO.getInstance().findByUser(usuario);
+        String msgError = "";
         if (usuarios.size() != 0) {
             return "Este usuário já está sendo utilizado, escolha outro!";
         } else {
@@ -145,17 +148,21 @@ public class RegrasGerenciamento {
             }
 
             if (!senha.equalsIgnoreCase("")) {
-                Passwords pass = new Passwords();
+                if (!senhaConfirmar.equalsIgnoreCase(senha)) {
+                    msgError = "Senhas digitas estão diferentes, confira.";
+                }
 
-                char[] c = senha.toCharArray();
+                Passwords pass = new Passwords();
                 byte[] salt = pass.getNextSalt();
+
+                String securePassword = pass.getSecurePassword(senha, salt);
                 u.setSalt(salt);
-                u.setDssenha(pass.hash(c, salt));
+                u.setDssenha(securePassword);
             }
 
             u.setIetipopermissao(permissao);
 
-            String msgError = validaInformacoesUsuario(u);
+            msgError += validaInformacoesUsuario(u);
 
             if (!msgError.equalsIgnoreCase("")) {
                 return msgError;
@@ -181,52 +188,67 @@ public class RegrasGerenciamento {
         return msgError;
     }
 
-    public String alterarUsuario(int id, String usuario, String nome, String senha, int permissao) throws InvalidKeySpecException, SQLException {
-
+    public String alterarUsuario(int id, String usuario, String nome, String senha, String senhaConfirmar, int permissao) throws InvalidKeySpecException, SQLException, NoSuchAlgorithmException, NoSuchProviderException {
+        String msgError = "";
         List<Usuario> usuarios = UsuarioDAO.getInstance().findByUser(usuario);
-        if (usuarios.size() != 0) {
-            return "Este usuário já está sendo utilizado, escolha outro!";
-        } else {
-
-            Usuario u = UsuarioDAO.getInstance().getById(id);
-            boolean isAlterou = false;
-
-            if (!usuario.equalsIgnoreCase("")) {
-                if (!u.getDsusuario().equalsIgnoreCase(usuario)) {
-                    u.setDsusuario(usuario);
-                    isAlterou = true;
-                }
+        boolean testanome = true;
+        for (Usuario u : usuarios) {
+            if (u.getDsusuario().equalsIgnoreCase(usuario)) {
+                testanome = false;
             }
+        }
+        if (usuarios.size() != 0 && testanome) {
+            msgError = "Este usuário já está sendo utilizado, escolha outro!";
+        }
+        Usuario u = UsuarioDAO.getInstance().getById(id);
+        boolean isAlterou = false;
 
-            if (!senha.equalsIgnoreCase("")) {
-
-                Passwords pass = new Passwords();
-
-                char[] c = senha.toCharArray();
-                byte[] salt = u.getSalt();
-                if (!pass.isExpectedPassword(c, salt, u.getDssenha())) {
-                    u.setDssenha(pass.hash(c, salt));
-                    isAlterou = true;
-                }
-            }
-
-            if (u.getIetipopermissao() != permissao) {
-                u.setIetipopermissao(permissao);
+        if (!usuario.equalsIgnoreCase("")) {
+            if (!u.getDsusuario().equalsIgnoreCase(usuario)) {
+                u.setDsusuario(usuario);
                 isAlterou = true;
             }
-
-            if (isAlterou) {
-                String msgError = validaInformacoesUsuario(u);
-
-                if (msgError.equalsIgnoreCase("")) {
-                    UsuarioDAO.getInstance().merge(u);
-                    return "";
-                } else {
-                    return msgError;
-                }
-            }
-            return "";
         }
+
+        if (!usuario.equalsIgnoreCase("")) {
+            if (!u.getNmusuario().equalsIgnoreCase(nome)) {
+                u.setNmusuario(nome);
+                isAlterou = true;
+            }
+        }
+
+        if (!senha.equalsIgnoreCase("")) {
+            if (!senhaConfirmar.equalsIgnoreCase(senha)) {
+                msgError += " Senhas digitas estão diferentes, confira.";
+            }
+
+            Passwords pass = new Passwords();
+            String securePassword = pass.getSecurePassword(senha, u.getSalt());
+
+            if (!securePassword.equalsIgnoreCase(u.getDssenha())) {
+                u.setDssenha(securePassword);
+                isAlterou = true;
+            }
+        } else {
+            msgError += " Senha é um campo obrigatório, verifique.";
+        }
+
+        if (u.getIetipopermissao() != permissao) {
+            u.setIetipopermissao(permissao);
+            isAlterou = true;
+        }
+
+        if (isAlterou) {
+            msgError += validaInformacoesUsuario(u);
+
+            if (msgError.equalsIgnoreCase("")) {
+                UsuarioDAO.getInstance().merge(u);
+                return "";
+            } else {
+                return msgError;
+            }
+        }
+        return "";
     }
 
     public String salvarProduto(String observacao, String nome, Float valor, int classificacao) {
@@ -236,7 +258,6 @@ public class RegrasGerenciamento {
         p.setNmproduto(nome);
         p.setClassificacao(classificacao);
         p.setVlproduto(valor);
-
         p.setDtatualizacao(cal.getTime());
 
         String retorno = validaInformacoesProduto(p);
@@ -317,4 +338,50 @@ public class RegrasGerenciamento {
     public void excluirUsuario(int id) {
         UsuarioDAO.getInstance().removeById(id);
     }
+
+    public void testaPrimeiroLogin() throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
+        List<Usuario> usuarios = UsuarioDAO.getInstance().findAll();
+
+        if (usuarios.size() == 0) {
+
+            Usuario usuario = new Usuario();
+
+            usuario.setDsusuario("admin");
+            usuario.setIeativo((short) 1);
+            usuario.setNmusuario("admin");
+            Passwords pass = new Passwords();
+            String senha = "admin";
+
+            byte[] salt = pass.getNextSalt();
+            String securePassword = pass.getSecurePassword(senha, salt);
+            usuario.setSalt(salt);
+            usuario.setDssenha(securePassword);
+            UsuarioDAO.getInstance().persist(usuario);
+        }
+    }
+
+    public int verificaLogin(String usuario, String senha) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
+        int controleLogin = 0; 
+        //0 - Login inválido
+        //1 - Primeiro Login
+        //2 - Login Ok
+        
+        List<Usuario> usua = UsuarioDAO.getInstance().findByUser(usuario);
+
+        if (usua.size() == 0) {
+            testaPrimeiroLogin();
+           controleLogin = 1;
+        }
+
+        for (Usuario usuarioEncontrado : usua) {
+            Passwords pass = new Passwords();
+            String securePassword = pass.getSecurePassword(senha, usuarioEncontrado.getSalt());
+            if (!securePassword.equalsIgnoreCase(usuarioEncontrado.getDssenha())) {
+                UsuarioDAO.getInstance().setUsuarioLogado(usuarioEncontrado);
+                controleLogin = 2;
+            }
+        }
+        return controleLogin;
+    }
+
 }

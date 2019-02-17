@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="REL04RelatiorioAdicionais" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c8dc1da-3957-41d7-adde-0576fc3d5731">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[Select * from adicional where ieativo=1 order by nmadicional]]>
+	</queryString>
+	<field name="ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NMADICIONAL" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VLADICIONAL" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IEATIVO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DTATUALIZACAO" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="106" y="45" width="376" height="20" uuid="002ba3dd-0479-4a03-aea2-10e0a29d73c4"/>
+				<textElement>
+					<font fontName="Arial" size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REL04 - RELATÓRIO DE ADICIONAIS ATIVOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="56" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="20" width="139" height="20" uuid="6332e3cf-e643-4a38-804d-1c4909896d6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[nº Adicional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="153" y="20" width="217" height="20" uuid="0186a046-cb37-47e2-b3fd-5d44052da4b6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Adicional]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="20" width="185" height="20" uuid="8042f0b6-f550-4d9d-a90a-43920f651a78"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor de Venda]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="3" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="e37597f8-2af3-46fb-806f-e7cfad08aacd">
+					<printWhenExpression><![CDATA[new Boolean( $V{COLUMN_COUNT}.intValue() % 2 != 0 )]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="15" y="3" width="124" height="20" uuid="9e8492b2-b72d-427f-b6ad-6e945edcb676"/>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="163" y="3" width="207" height="20" uuid="464650eb-de93-4c92-9a6d-efa4912df73d"/>
+				<textFieldExpression><![CDATA[$F{NMADICIONAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="370" y="3" width="185" height="20" uuid="074f8109-1c01-4f4c-b2f8-055c561f67a5"/>
+				<textFieldExpression><![CDATA[$F{VLADICIONAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

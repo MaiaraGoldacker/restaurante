@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="REL01RelatorioGestaoVendas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f7fa4a48-7acf-4a0d-8f1f-9d1369ee0b0b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="Trabalho1" uuid="b0c1bf82-5e9b-4d55-b59f-e61c3473d654">
+		<queryString language="SQL">
+			<![CDATA[select * from comanda]]>
+		</queryString>
+	</subDataset>
+	<parameter name="pID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pIdUsuario" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pDtAtualizacaoIni" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pDtAtualizacaoFim" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select *,
+( pa.vlTotal - (txDesconto * pa.vlTotal /100) +  ( if((pa.vlTotal + (txAcrescimo * pa.vlTotal/100))=pa.vlTotal,0,pa.vlTotal))) VLLIQUIDO
+ from pagamento pa
+ inner join pedido as pe on pa.id = pe.pagamento_id
+ inner join produto as pr on  pr.id = pe.produto_id
+ where 1=1
+ and (DTATULIZACAO BETWEEN $P{pDtAtualizacaoIni} AND $P{pDtAtualizacaoFim}
+ or ($P{pDtAtualizacaoIni} = '' and $P{pDtAtualizacaoFim} = ''))
+ and (pa.usuario_id = $P{pIdUsuario} or $P{pIdUsuario} = 0)
+ and (pa.id = $P{pID} or $P{pID} = 0)
+ group by pr.id
+ order by pa.id]]>
+	</queryString>
+	<field name="ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TXDESCONTO" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="TXACRESCIMO" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DTATULIZACAO" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="USUARIO_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IEATIVO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VLTOTAL" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="OBSPEDIDO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DTATUALIZACAO" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="STPEDIDO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PRODUTO_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="COMANDA_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PAGAMENTO_ID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NMPRODUTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DSOBSERVACAOPRODUTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CLASSIFICACAO" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VLPRODUTO" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="VLLIQUIDO" class="java.lang.Double"/>
+	<variable name="SomavlTot" class="java.lang.Number" incrementType="Group" incrementGroup="groupPagamentos" calculation="Sum">
+		<variableExpression><![CDATA[$F{VLLIQUIDO}]]></variableExpression>
+	</variable>
+	<variable name="CountPagtos" class="java.lang.Integer" incrementType="Group" incrementGroup="groupPagamentos" calculation="Count">
+		<variableExpression><![CDATA[$F{ID}]]></variableExpression>
+	</variable>
+	<group name="groupPagamentos">
+		<groupExpression><![CDATA[$F{ID}]]></groupExpression>
+		<groupHeader>
+			<band height="63">
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="310" y="20" width="100" height="20" backcolor="#FFFFFF" uuid="8edd03ed-82a6-4142-a0fa-6592bc802fb8"/>
+					<textFieldExpression><![CDATA[$F{VLTOTAL}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="10" y="20" width="100" height="20" uuid="72e90aa5-032b-4083-99e1-c9397d0cf05f"/>
+					<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="110" y="20" width="100" height="20" uuid="451d3bc4-b0f4-4789-91e7-49498c9bf3c9"/>
+					<textFieldExpression><![CDATA[$F{TXDESCONTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="210" y="20" width="100" height="20" uuid="bd95d801-2991-4fe1-bc75-916989e2d7a0"/>
+					<textFieldExpression><![CDATA[$F{TXACRESCIMO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="43" width="100" height="20" uuid="72372690-3225-49cb-be08-92f5c47d0c29"/>
+					<text><![CDATA[Produto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="358" y="43" width="100" height="20" uuid="a770458f-8114-4ce2-94ae-121a3167296d"/>
+					<text><![CDATA[Valor do Produto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="110" y="0" width="100" height="20" uuid="f4ce74fe-395c-4f34-9e28-979a93c7b41d"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Desconto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="210" y="0" width="100" height="20" uuid="f3542c30-32e5-4cd7-8f61-d501c6d091f2"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Acréscimo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="10" y="0" width="100" height="20" uuid="e9bd30c4-e6bf-433e-b00a-6f29cd3853a8"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[nº Pagamento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="310" y="0" width="100" height="20" uuid="0c28b4a4-249b-44ce-a13b-df96bb56f10e"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tot. Venda Bruta]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="410" y="0" width="121" height="20" uuid="a3bc4c4a-ce34-443a-8108-2bc0be7c440f"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tot. Venda Liquida]]></text>
+				</staticText>
+				<textField pattern="¤ #,##0.00">
+					<reportElement x="410" y="20" width="121" height="20" uuid="7e4e1346-c4c6-4209-9488-b4f27eedfbfd"/>
+					<textFieldExpression><![CDATA[$F{VLLIQUIDO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50">
+				<line>
+					<reportElement x="0" y="21" width="555" height="1" uuid="9313e5d2-76f6-46a1-b7a7-a34527341fd2"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="110" y="10" width="376" height="20" uuid="e2b952e7-9b03-47e8-85ea-2288f1ff0187"/>
+				<textElement>
+					<font fontName="Arial" size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REL01 - RELATÓRIO DE GESTÃO DE VENDAS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="0" y="0" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="f420fab7-0320-4574-bfba-46a25d82b775">
+					<printWhenExpression><![CDATA[new Boolean( $V{COLUMN_COUNT}.intValue() % 2 != 0 )]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="10" y="0" width="348" height="20" uuid="69243216-b346-40dd-8e3b-414f82d911b7"/>
+				<textFieldExpression><![CDATA[$F{NMPRODUTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="358" y="0" width="185" height="20" uuid="02ea6baf-822d-476f-af33-de1e44b5dc8e"/>
+				<textFieldExpression><![CDATA[$F{VLPRODUTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="50">
+			<textField pattern="¤ #,##0.00">
+				<reportElement x="443" y="20" width="100" height="20" uuid="c0b0a26d-8278-4df7-8ff2-cd7abdbf0f59"/>
+				<textFieldExpression><![CDATA[$V{SomavlTot}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="20" width="100" height="20" uuid="b1fd36d0-7e05-412f-8992-9ac20a3cac7f"/>
+				<textFieldExpression><![CDATA[$V{CountPagtos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="20" width="129" height="20" uuid="0a5a7ab0-2e46-4204-9f1d-d55519aaf05a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de Pagamentos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="341" y="20" width="100" height="20" uuid="38f2ed3f-f65a-492b-8327-374ce5fc84c8"/>
+				<textElement>
+					<font size="12" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Vl. Lucro líquido]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

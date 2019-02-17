@@ -12,8 +12,8 @@ import CLASSE.Produto;
 import DAO.ComandaDAO;
 import REGRAS.RegrasPagamento;
 import REGRAS.RegrasPedido;
-import TELA.JTABLE.RealizarPedido.PedidoJtable;
-import TELA.JTABLE.RealizarPedido.ProdutoJtable;
+import TELA.JTABLEMAP.CUSTOMIZADA.PedidoJtable;
+import TELA.JTABLEMAP.CUSTOMIZADA.ProdutoJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -32,7 +32,7 @@ public class RealizarPedido extends javax.swing.JFrame {
 
     /**
      * Creates new form cadastroProdutos
-     */
+     */ 
     public RealizarPedido() {
         initComponents();
         carregaDetalhesTela();

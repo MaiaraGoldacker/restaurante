@@ -7,6 +7,7 @@ package TELA;
 
 import CLASSE.Produto;
 import REGRAS.RegrasGerenciamento;
+import REPORT.IPedidosReport;
 import TELA.JTABLEMAP.ProdutoJtable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -41,6 +42,7 @@ public class CrudProdutos extends javax.swing.JFrame {
         btExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/exc.png")));
         btLimpar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/limp.png")));
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/sair.png")));
+        btImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/print.png")));
         this.setIconImage(new javax.swing.ImageIcon(getClass().getResource("/imagens/food.png")).getImage());
         DecimalFormat dFormat = new DecimalFormat("#,###,##0.00");
         NumberFormatter Formatter = new NumberFormatter(dFormat);
@@ -94,9 +96,9 @@ public class CrudProdutos extends javax.swing.JFrame {
         btSair = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        btImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1250, 516));
 
         tbProdutos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         tbProdutos.setModel(new javax.swing.table.DefaultTableModel(
@@ -281,6 +283,14 @@ public class CrudProdutos extends javax.swing.JFrame {
             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        btImprimir.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        btImprimir.setText("Imprimir");
+        btImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -288,7 +298,9 @@ public class CrudProdutos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(666, 666, 666)
+                        .addGap(571, 571, 571)
+                        .addComponent(btImprimir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btLimpar)
@@ -318,7 +330,8 @@ public class CrudProdutos extends javax.swing.JFrame {
                     .addComponent(btAlterar)
                     .addComponent(btSalvar)
                     .addComponent(btLimpar)
-                    .addComponent(btSair))
+                    .addComponent(btSair)
+                    .addComponent(btImprimir))
                 .addContainerGap())
         );
 
@@ -399,6 +412,15 @@ public class CrudProdutos extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btSairActionPerformed
 
+    private void btImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImprimirActionPerformed
+        IPedidosReport i = new IPedidosReport();
+        try {
+            i.gerarRelatorioPadrao("C:\\Atividade\\Pedidos\\src\\IREPORTXML\\REL03RelatorioProdutos.jasper", "Relatório de Produtos");
+        } catch (SQLException ex) {
+            Logger.getLogger(ConsultaLucro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btImprimirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -448,6 +470,7 @@ public class CrudProdutos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAlterar;
     private javax.swing.JButton btExcluir;
+    private javax.swing.JButton btImprimir;
     private javax.swing.JButton btLimpar;
     private javax.swing.JButton btSair;
     private javax.swing.JButton btSalvar;
