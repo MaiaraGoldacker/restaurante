@@ -85,7 +85,7 @@ order by ietipopermissao, nmusuario ]]>
 	<detail>
 		<band height="22" splitType="Stretch">
 			<rectangle radius="10">
-				<reportElement x="0" y="0" width="555" height="20" backcolor="#CCCCCC" uuid="197fb8ee-c3f3-4fe5-84f0-61e5fb4d4714">
+				<reportElement x="0" y="0" width="555" height="20" forecolor="#FFFFFF" backcolor="#CCCCCC" uuid="197fb8ee-c3f3-4fe5-84f0-61e5fb4d4714">
 					<printWhenExpression><![CDATA[new Boolean( $V{COLUMN_COUNT}.intValue() % 2 != 0 )]]></printWhenExpression>
 				</reportElement>
 			</rectangle>

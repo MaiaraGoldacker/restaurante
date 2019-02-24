@@ -5,7 +5,6 @@
         <group>
             <file>file:/C:/Atividade/Pedidos/src/DAO/UsuarioDAO.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/JTABLEMAP/UsuarioJtable.java</file>
-            <file>file:/C:/Atividade/Pedidos/src/REPORT/iPedidosReport.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/CrudProdutos.java</file>
             <file>file:/C:/Atividade/Pedidos/src/REGRAS/RegrasPagamento.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/JTABLEMAP/PagamentoJtable.java</file>
@@ -15,23 +14,28 @@
             <file>file:/C:/Atividade/Pedidos/src/DAO/AdicionalPedidoDAO.java</file>
             <file>file:/C:/Atividade/Pedidos/src/CLASSE/Adicional.java</file>
             <file>file:/C:/Atividade/Pedidos/src/DAO/ProdutoDAO.java</file>
+            <file>file:/C:/Atividade/Pedidos/src/REGRAS/Utilidades.java</file>
             <file>file:/C:/Atividade/Pedidos/src/CLASSE/Comanda.java</file>
+            <file>file:/C:/Atividade/Pedidos/src/DAO/PagamentoDAO.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/JTABLEMAP/AdicionalJtable.java</file>
             <file>file:/C:/Atividade/Pedidos/src/DAO/PedidoDAO.java</file>
             <file>file:/C:/Atividade/Pedidos/src/REGRAS/RegrasGerenciamento.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/CrudUsuario.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/CrudAdicional.java</file>
+            <file>file:/C:/Atividade/Pedidos/src/REGRAS/Passwords.java</file>
             <file>file:/C:/Atividade/Pedidos/src/CLASSE/Produto.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/Principal.java</file>
             <file>file:/C:/Atividade/Pedidos/src/DAO/AdicionaisDAO.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/RealizarPedido.java</file>
             <file>file:/C:/Atividade/Pedidos/src/REGRAS/RegrasPedido.java</file>
+            <file>file:/C:/Atividade/Pedidos/src/REPORT/IPedidosReport.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/ConsultaAdicionais.java</file>
             <file>file:/C:/Atividade/Pedidos/src/CLASSE/Pedido.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/RealizarPagamento.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/ConsultaLucro.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/TelaLogar.java</file>
             <file>file:/C:/Atividade/Pedidos/src/TELA/JTABLEMAP/ProdutoJtable.java</file>
+            <file>file:/C:/Atividade/Pedidos/src/CLASSE/Usuario.java</file>
         </group>
     </open-files>
 </project-private>
