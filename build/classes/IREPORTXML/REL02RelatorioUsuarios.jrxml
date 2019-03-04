@@ -5,9 +5,6 @@
 	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[SELECT *
-,IFNULL(MAX(IF(ietipopermissao = 0, 'Total', NULL)),'') total
-,IFNULL(MAX(IF(ietipopermissao = 1, 'Parcial', NULL)),'') parcial
-,IFNULL(MAX(IF(ietipopermissao = 1, 'Mínima', NULL)),'') minima
 FROM usuario
 where ieativo = 1
 order by ietipopermissao, nmusuario]]>
@@ -21,7 +18,7 @@ order by ietipopermissao, nmusuario]]>
 	<field name="DSUSUARIO" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="DSSENHA" class="java.lang.Object">
+	<field name="DSSENHA" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="IEATIVO" class="java.lang.Integer">
@@ -33,9 +30,6 @@ order by ietipopermissao, nmusuario]]>
 	<field name="SALT" class="java.lang.Object">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="total" class="java.lang.String"/>
-	<field name="parcial" class="java.lang.String"/>
-	<field name="minima" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -107,15 +101,7 @@ order by ietipopermissao, nmusuario]]>
 			</textField>
 			<textField>
 				<reportElement x="276" y="0" width="94" height="20" uuid="822b5d1d-b2af-4c28-8508-0ae2bc570fd8"/>
-				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="301" y="0" width="69" height="20" uuid="a1db81f2-be05-4944-90d4-aacc4474fb30"/>
-				<textFieldExpression><![CDATA[$F{parcial}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="288" y="0" width="82" height="20" uuid="d9482e03-829b-4beb-be9c-52053c493e3d"/>
-				<textFieldExpression><![CDATA[$F{minima}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{IETIPOPERMISSAO} == 0 ? "Total": $F{IETIPOPERMISSAO} == 1 ? "Parcial" : $F{IETIPOPERMISSAO} == 2 ? "Mínima" :" "  ]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
