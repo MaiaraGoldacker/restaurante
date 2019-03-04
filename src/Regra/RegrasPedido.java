@@ -51,9 +51,9 @@ public class RegrasPedido {
 
         if (duracao.toHours() >= 1) {
             label.setForeground(Color.RED);
-            label.setText("Pedido há " + duracao.toHours() + " hrs");
+            label.setText("Pedido há " + duracao.toHours() + " h");
         } else {
-            label.setText("Pedido há " + duracao.toHours() + " hrs e " + duracao.toMinutes() + " min");
+            label.setText("Pedido há " + duracao.toMinutes() + " min");
         }
     }
 

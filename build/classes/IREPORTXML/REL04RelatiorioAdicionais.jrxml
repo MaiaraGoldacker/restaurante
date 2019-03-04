@@ -33,6 +33,10 @@
 				</textElement>
 				<text><![CDATA[REL04 - RELATÓRIO DE ADICIONAIS ATIVOS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="38" y="31" width="48" height="48" uuid="a6ef5801-19b9-48f8-a228-1d8b450fae53"/>
+				<imageExpression><![CDATA["C:\\Atividade\\Pedidos\\src\\Icone\\Restaurant-icon.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>

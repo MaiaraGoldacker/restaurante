@@ -39,6 +39,10 @@
 				</textElement>
 				<text><![CDATA[REL03 - RELATÓRIO DE PRODUTOS ATIVOS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="28" y="21" width="48" height="48" uuid="2eefeb05-ac78-49d5-b5ea-cf2e165b50e7"/>
+				<imageExpression><![CDATA["C:\\Atividade\\Pedidos\\src\\Icone\\Restaurant-icon.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>

@@ -32,6 +32,10 @@
 				</textElement>
 				<text><![CDATA[REL05 - RELATÓRIO DE COMANDAS ATIVOS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="22" y="21" width="48" height="48" uuid="72a5d352-e070-4218-aee6-10a75b4dd3e0"/>
+				<imageExpression><![CDATA["C:\\Atividade\\Pedidos\\src\\Icone\\Restaurant-icon.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>

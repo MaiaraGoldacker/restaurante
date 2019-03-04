@@ -10,7 +10,7 @@
 ,IFNULL(MAX(IF(ietipopermissao = 1, 'Mínima', NULL)),'') minima
 FROM usuario
 where ieativo = 1
-order by ietipopermissao, nmusuario ]]>
+order by ietipopermissao, nmusuario]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -48,6 +48,10 @@ order by ietipopermissao, nmusuario ]]>
 				</textElement>
 				<text><![CDATA[REL02 - RELATÓRIO DE USUÁRIOS ATIVOS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="15" y="18" width="62" height="50" uuid="cbc7c7bf-899e-4651-9aac-eef1c1d16c4c"/>
+				<imageExpression><![CDATA["C:\\Atividade\\Pedidos\\src\\Icone\\Restaurant-icon.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<columnHeader>

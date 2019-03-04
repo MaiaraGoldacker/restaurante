@@ -181,6 +181,10 @@
 				</textElement>
 				<text><![CDATA[REL01 - RELATÓRIO DE GESTÃO DE VENDAS]]></text>
 			</staticText>
+			<image>
+				<reportElement x="32" y="10" width="48" height="48" uuid="5faabd95-179a-4ba3-b3ef-bafb7905e31b"/>
+				<imageExpression><![CDATA["C:\\Atividade\\Pedidos\\src\\Icone\\Restaurant-icon.png"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<detail>
