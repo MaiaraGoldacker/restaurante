@@ -48,8 +48,8 @@ public class Utilidades {
 
     public Connection pegarConexaoBD() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/Trabalho1";
-        Connection conn = DriverManager.getConnection(url, "root", "root");
-        return conn;
+        Connection conn =  DriverManager.getConnection(url, "root", "root");
+        return conn;         
     }
 
     public DefaultComboBoxModel carregarComboUsuario() throws SQLException {

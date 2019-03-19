@@ -392,7 +392,15 @@ public class RegrasGerenciamento {
                     return 0;
                 }
             } else {
-                String securePassword = Passwords.getInstance().getSecurePassword(senha, usua.getSalt());
+                
+            
+            /*if (!securePassword.equalsIgnoreCase(u.getDssenha())) {
+                u.setDssenha(securePassword);
+                isAlterou = true;
+            }*/
+                Usuario u = UsuarioDAO.getInstance().getById(usua.getId());
+                String securePassword = Passwords.getInstance().getSecurePassword(senha, u.getSalt());
+
                 if (securePassword.equalsIgnoreCase(usua.getDssenha())) {
                     UsuarioDAO.getInstance().setUsuarioLogado(usua);
                     return 1;

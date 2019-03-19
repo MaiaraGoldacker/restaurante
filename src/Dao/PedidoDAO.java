@@ -2,8 +2,6 @@ package Dao;
 
 import Classe.Pedido;
 import Regra.Utilidades;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +16,7 @@ import javax.persistence.Persistence;
  * @author maiara
  */
 public class PedidoDAO {
-
-    //private static ClienteJpaDAO instance;
+    
     private static PedidoDAO instance;
     protected EntityManager entityManager;
 
@@ -60,6 +57,7 @@ public class PedidoDAO {
             ped.add(getById(rs.getInt("ID")));
         }
 
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return ped;
     }
@@ -75,6 +73,7 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -92,6 +91,7 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -107,7 +107,8 @@ public class PedidoDAO {
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
-
+ 
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -124,6 +125,7 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -137,20 +139,21 @@ public class PedidoDAO {
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
-
+        
+        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
 
     public Pedido getById(final int id) {
-        return entityManager.find(Pedido.class, id);
+        return entityManager.find(Pedido.class, id);   
     }
 
     public void persist(Pedido pedido) {
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(pedido);
-            entityManager.getTransaction().commit();
+            entityManager.getTransaction().commit();          
         } catch (Exception ex) {
             ex.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -161,7 +164,7 @@ public class PedidoDAO {
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(cliente);
-            entityManager.getTransaction().commit();
+            entityManager.getTransaction().commit();        
         } catch (Exception ex) {
             ex.printStackTrace();
             entityManager.getTransaction().rollback();
@@ -173,7 +176,7 @@ public class PedidoDAO {
             entityManager.getTransaction().begin();
             pedido = entityManager.find(Pedido.class, pedido.getId());
             entityManager.remove(pedido);
-            entityManager.getTransaction().commit();
+            entityManager.getTransaction().commit();           
         } catch (Exception ex) {
             ex.printStackTrace();
             entityManager.getTransaction().rollback();

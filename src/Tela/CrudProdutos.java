@@ -99,6 +99,7 @@ public class CrudProdutos extends javax.swing.JFrame {
         btImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1350, 516));
 
         tbProdutos.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         tbProdutos.setModel(new javax.swing.table.DefaultTableModel(
