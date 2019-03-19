@@ -57,7 +57,6 @@ public class PedidoDAO {
             ped.add(getById(rs.getInt("ID")));
         }
 
-        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return ped;
     }
@@ -73,7 +72,6 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -91,7 +89,6 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -107,8 +104,7 @@ public class PedidoDAO {
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
- 
-        stmt.close();
+
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -125,7 +121,6 @@ public class PedidoDAO {
             prod.add(getById(rs.getInt("ID")));
         }
 
-        stmt.close();
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
@@ -139,8 +134,7 @@ public class PedidoDAO {
         while (rs.next()) {
             prod.add(getById(rs.getInt("ID")));
         }
-        
-        stmt.close();
+
         Utilidades.getInstance().pegarConexaoBD().close();
         return prod;
     }
