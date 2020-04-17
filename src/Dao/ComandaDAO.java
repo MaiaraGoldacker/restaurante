@@ -29,6 +29,7 @@ public class ComandaDAO {
     }
 
     private ComandaDAO() {
+        
         entityManager = getEntityManager();
     }
 

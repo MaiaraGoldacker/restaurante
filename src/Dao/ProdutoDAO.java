@@ -27,7 +27,6 @@ public class ProdutoDAO {
     }
 
     private ProdutoDAO() {
-        
         entityManager = getEntityManager();
     }
 
